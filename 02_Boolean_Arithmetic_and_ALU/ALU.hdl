@@ -59,15 +59,15 @@ CHIP ALU {
     Mux16(a=xAndy, b=xAddy, sel=f, out=fxy);
 
     Not16(in=fxy, out=notfxy);
-    Mux16(a=fxy, b=notfxy, sel=no, out=out);
+    Mux16(a=fxy, b=notfxy, sel=no, out=oo);
 
     // zr: Check if non-zero
-    Or8Way(in=out[0..7], out=z1);
-    Or8Way(in=out[8..15], out=z2);
-    Or(a=z1, b=z2, out=isnonzero);
+    Or16Way(in=oo, out=isnonzero);
     Not(in=isnonzero, out=zr);
 
-   // ng: Check if MSB is zero
-   Mux(a=false, b=true, sel=out[15], out=ng);
-
+   // ng: Check if MSB is zero. Workaound to solve internal pins
+   And16(a[0..15]=true,b=oo,out[15]=ng,out[0..14]=drop); //ng
+   
+   //Workaround to solve internal pints
+   Or16(a=oo,b[0..15]=false,out=out);
 }
