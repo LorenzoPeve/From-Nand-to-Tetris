@@ -11,10 +11,22 @@
 // "white" in every pixel;
 // the screen should remain fully clear as long as no key is pressed.
 
-// Put your code here.
 
-// Probe the keyboard
+(LISTEN_KEYBOARD)
+@KBD
+D=M
+@KEYBOARD_PRESSED
+D; JGT
+@pixel_fill
+M=0
+@INITIALIZE
+0; JMP
 
+(KEYBOARD_PRESSED)
+@pixel_fill
+M=-1
+
+(INITIALIZE)
 // INITIALIZE `row_idx` = `col_idx` = 0. We need to loop over all rows and cols.
 @R0
 D=A
@@ -28,7 +40,7 @@ M=D
 
 // INITIALIZE `screen_register`=0. This is HOW we are going to change pixels
 // Why? (1) We cannot address single bits, so we cannot do arr[row, col]
-@R0
+@SCREEN
 D=A
 @screen_register // 0 to 8191
 M=D
@@ -44,9 +56,8 @@ D=A
 @COL_MAX
 M=D
 
-// Add key press
 (LOOP_ROWS)
-  // if (i==256) go to LOOP_ROWS (i.e., next row) Recakk 32x16=512
+  // if (i==256) go to LOOP_ROWS (i.e., next row)
   @row_idx
   D=M
   @ROW_MAX
@@ -54,7 +65,7 @@ M=D
   @END
   D; JEQ
 
-  // You have to reset the columns
+  // Reset column counter
   @col_idx
   M=0
 
@@ -75,11 +86,12 @@ M=D
   @LOOP_ROWS
   D; JEQ
 
-  @screen_register
+  // Setting RAM[screen_register] = pixel_fill
+  @pixel_fill
   D=M
-  @SCREEN
-  A=A+D
-  M=-1
+  @screen_register
+  A=M
+  M=D
 
   // screen_register++
   @screen_register
@@ -93,5 +105,5 @@ M=D
 	0; JMP
 
 (END)
-  @END
+  @LISTEN_KEYBOARD
   0; JMP
