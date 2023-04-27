@@ -84,7 +84,7 @@ def get_label_positions(data: list[str]) -> dict:
 def remove_labels(data: list[str]) -> list[str]:
     """Removes (LABEL) from the instruction."""
     program_w_no_labels = []
-    is_label = re.compile(r"\(\w+\)")
+    is_label = re.compile(r"\(.+\)")
     for line in data:
         if is_label.match(line):
             continue
@@ -118,6 +118,8 @@ def translate_a_instructions(data: list[str], symbols: dict) -> None:
     is_constant = re.compile(r"@\d+")
     is_symbol = re.compile(r"@\w+")
     for i, line in enumerate(data):
+        if i == 136:
+            print('here')
 
         if is_constant.match(line):
             data[i] = '0' + _get_binary_code(int(line[1:]))
@@ -139,3 +141,5 @@ assert translate_a_instructions(
     ['@SCREEN'], mapping.SYMBOL_TABLE)[0] == '0100000000000000'
 assert translate_a_instructions(
     ['@KBD'], mapping.SYMBOL_TABLE)[0] == '0110000000000000'
+print( translate_a_instructions(
+    ['@27058'], mapping.SYMBOL_TABLE)[0]) #== '0110000000000000'
