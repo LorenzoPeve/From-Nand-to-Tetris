@@ -38,12 +38,11 @@ OPS = {
         ),
 }
 
-class Arithmetic:
+class Operation:
 
     """
     Note: Design decision is to store operands in registers R13 and R14 and
-    result computation in R15.
-    
+    result computation in R15.    
     """
     
     allowed = ['add', 'sub', 'neg', 'eq', 'gt', 'lt', 'and', 'or', 'not']    
@@ -117,12 +116,17 @@ class Arithmetic:
         
         self.ins += s
 
-    def translate_arithmetic(self) -> list[str]:
-
+    def translate_operations(self) -> list[str]:
+        """
+        Translates and arithmetic or logical operation by popping the
+        operand(s) from the stack and storing the resulting value back in the
+        stack.
+        """
         self._retrieve_operands() # Put operand(s) in registers R13 and R14
         self._perform_operation() # Performs the operation and stores it in R15
         self._put_back_in_stack() # Puts the result in R15 back in the stack
         return self.ins.split('\n')
+
 
     @classmethod
     def increase_counter(cls):
@@ -273,8 +277,6 @@ class Arithmetic:
                         
         self.increase_counter()
         return s
-
-
 
 
 if __name__ == '__main__':
