@@ -1,5 +1,6 @@
 import os
 from reader import Reader
+from memory import  MemorySegments
 
 def test_remove_whitespace_within():
 
@@ -12,4 +13,9 @@ def test_remove_whitespace_within():
     out = r.remove_whitespace_within(data)
     assert out == ['hello world', 'this is a test', 'multiple lines with tabs']
 
-test_remove_whitespace_within()
+
+
+c = MemorySegments('push constant 5')
+assert c.op == 'push'
+assert c.segment == 'constant'
+assert c.i == '5'

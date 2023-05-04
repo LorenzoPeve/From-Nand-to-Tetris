@@ -75,7 +75,7 @@ class Operation:
             f'M=D\n'
         )
 
-    def _retrieve_operands(self) -> str:
+    def _retrieve_operands(self) -> None:
         """
         Retrieves operand(s) needed for computation by storing them in 
         predefined registers.
@@ -87,7 +87,7 @@ class Operation:
             self.ins += self._retrieve_operand_from_stack(self.arg2_register)
             self.ins += self._retrieve_operand_from_stack(self.arg1_register)
         
-    def _perform_operation(self):
+    def _perform_operation(self) -> None:
         """
         Computes an operation using R13 and R14 as operands, storing the value
         in the D-register and then putting it in R15.
@@ -98,7 +98,7 @@ class Operation:
             func = getattr(self.__class__, self.op)
             self.ins += func(self)
 
-    def _put_back_in_stack(self):
+    def _put_back_in_stack(self) -> None:
         """
         Gets the computation result from R15 and stores it at the stack
         pointer.
@@ -133,7 +133,7 @@ class Operation:
         cls.counter += 1
 
 
-    def eq(self):
+    def eq(self) -> str:
         s = (
             f'@R13\n'
             f'D=M\n'
@@ -153,8 +153,7 @@ class Operation:
         self.increase_counter()
         return s
 
-    def lt(self):
-
+    def lt(self) -> str:
         s = (
             f'@R13\n'
             f'D=M\n'
@@ -216,7 +215,7 @@ class Operation:
         self.increase_counter()
         return s
     
-    def gt(self):
+    def gt(self) -> str:
         s = (
             f'@R13\n'
             f'D=M\n'
@@ -276,12 +275,4 @@ class Operation:
         )
                         
         self.increase_counter()
-        return s
-
-
-if __name__ == '__main__':
-    c = Arithmetic('add')
-    print(c._retrieve_operands())
-
-
-  
+        return s  
