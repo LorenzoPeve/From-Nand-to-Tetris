@@ -20,7 +20,7 @@ class Reader():
                 data[i] = line.strip()
 
     def remove_whitespace_within(self, data: list[str]) -> list:
-        return [s.replace(' ', '') for s in data]
+        return [" ".join(s.strip().split()) for s in data]
 
     def read(self) -> list:
         with open(self.fpath) as f:
