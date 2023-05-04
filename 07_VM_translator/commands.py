@@ -208,12 +208,74 @@ class Arithmetic:
 
             f'(PUT_RESULT_IN_STACK_{self.counter})\n'
         )
-                
+
         self.increase_counter()
         return s
     
     def gt(self):
+        s = (
+            f'@R13\n'
+            f'D=M\n'
+
+            f'@X_GT_EQ_THAN_ZERO{self.counter}\n'
+            f'D; JGE\n'
+
+            f'@X_LESS_THAN_ZERO{self.counter}\n'
+            f'0; JMP\n'
+
+            # x >= 0
+            f'(X_GT_EQ_THAN_ZERO{self.counter})\n'
+            f'@R14\n'
+            f'D=M\n'
+            f'@SAME_SIGN{self.counter}\n'
+            f'D; JGE\n'
+
+            # x >= 0 and y < 0. Thus, False
+            f'@IS_TRUE_{self.counter}\n'
+            f'0; JMP\n'
+
+            # x < 0
+            f'(X_LESS_THAN_ZERO{self.counter})\n'
+            f'@R14\n'
+            f'D=M\n'
+            f'@SAME_SIGN{self.counter}\n'
+            f'D; JLT\n'
+
+            # x < 0 and y >= 0. Thus, True
+            f'@IS_FALSE_{self.counter}\n'
+            f'0; JMP\n'
+
+            # If (x>=0 and y>=0) or (x<0 and y<0)
+            f'(SAME_SIGN{self.counter})\n'
+            f'@R13\n' 
+            f'D=M\n'  # D = x
+            f'@R14\n'
+            f'D=D-M\n' # D = x-y. If D <0, x is less than y
+            f'@IS_TRUE_{self.counter}\n'
+            f'D; JGT\n'
+            f'@IS_FALSE_{self.counter}\n'
+            f'0; JMP\n'            
+
+            f'(IS_TRUE_{self.counter})\n'
+            f'@R15\n'
+            f'M=-1\n'
+            f'@PUT_RESULT_IN_STACK_{self.counter}\n'
+            f'0; JMP\n'
+
+            f'(IS_FALSE_{self.counter})\n'
+            f'@R15\n'
+            f'M=0\n'
+            f'@PUT_RESULT_IN_STACK_{self.counter}\n'
+            f'0; JMP\n'
+
+            f'(PUT_RESULT_IN_STACK_{self.counter})\n'
+        )
+                        
         self.increase_counter()
+        return s
+
+
+
 
 if __name__ == '__main__':
     c = Arithmetic('add')
