@@ -9,6 +9,7 @@ class MemorySegment():
     }
 
 
+
     def __init__(self, line: str):
         self.op, self.segment, self.i = line.split()
         self.i = int(self.i)
@@ -83,6 +84,9 @@ class MemorySegment():
     
     def _basic_pop_operation(self):
         """Pops the top stack value and stores it in segment[index]"""
+
+        # Note
+
         s = (
             f'{self._put_target_address_into_R13()}'
             f'{self._decrease_stack_pointer()}'
@@ -106,6 +110,7 @@ class MemorySegment():
         
         elif self.segment in ['local', 'argument', 'this', 'that', 'temp']:
             
+            # Check that temp is between 5-12
             if self.segment == 'temp':
                 assert self.i >= 0 and self.i <=7, f'Temp only goes 5-12'
 
@@ -116,7 +121,11 @@ class MemorySegment():
             else:
                 raise ValueError(
                     f"{self.op} {self.segment} {self.i} couldn't be mapped."
-                    )               
+                    )
+        
+
+        
+
         else:
             raise ValueError(
                     f"{self.op} {self.segment} {self.i} couldn't be mapped."
