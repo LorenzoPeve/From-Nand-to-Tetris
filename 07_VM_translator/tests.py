@@ -1,6 +1,5 @@
-import os
 from reader import Reader
-from memory import  MemorySegments
+from memory import  MemorySegment
 
 def test_remove_whitespace_within():
 
@@ -15,7 +14,7 @@ def test_remove_whitespace_within():
 
 
 
-c = MemorySegments('push constant 5')
+c = MemorySegment('push constant 5')
 assert c.op == 'push'
 assert c.segment == 'constant'
-assert c.i == '5'
+assert c.i == 5
