@@ -9,10 +9,10 @@ class MemorySegment():
     }
 
 
-
-    def __init__(self, line: str):
+    def __init__(self, line: str, fname: str):
         self.op, self.segment, self.i = line.split()
         self.i = int(self.i)
+        self.fname = fname
 
     def _increase_stack_pointer(self):
         return '@0\nM=M+1\n'
@@ -109,10 +109,38 @@ class MemorySegment():
         return s
 
 
+    def _static_pop_operation(self):
+        "Pops value from stack and stores it into global space"
+        return (
+            f'{self._decrease_stack_pointer()}'
+            f'@0\n'
+            f'A=M\n'
+            f'D=M\n'
+            f'@{self.fname}.{self.i}\n'
+            f'M=D\n'    
+        )
+
+    def _static_push_operation(self):
+        "Pushes value from global space into stack"
+        return (         
+            f'@{self.fname}.{self.i}\n'
+            f'D=M\n'
+            f'@0\n'
+            f'A=M\n'
+            f'M=D\n'
+            f'{self._increase_stack_pointer()}'
+        )
+
     def translate_memory(self):
         
         if self.segment == 'constant':
             return self._push_constant().split('\n')
+        
+        if self.segment == 'static':
+            if self.op == 'push':
+                return self._static_push_operation().split('\n')
+            else:
+                return self._static_pop_operation().split('\n')
                     
         # Check that temp is between 5-12
         if self.segment == 'temp':
@@ -126,8 +154,3 @@ class MemorySegment():
             raise ValueError(
                     f"{self.op} {self.segment} {self.i} couldn't be mapped."
                     )
-
-
-
-
-
