@@ -20,16 +20,16 @@ class MemorySegment():
     def _decrease_stack_pointer(self):
         return '@0\nM=M-1\n'
 
-    def _put_D_At_pointer_address(self):
+    def _put_D_at_pointer_address(self):
         """Sets the next available pointer location to the D-register value."""
         return '@0\nA=M\nM=D\n'    
 
-    def _put_pushed_value_into_D(self):
+    def _put_target_push_value_into_D(self):
         """
         Puts the value of segment[index] into D-register.
         addr= SegmentPointer+i (unless temp). Then D=*addr.
         """
-        if self.segment != 'temp':
+        if self.segment not in ['temp', 'pointer']:
             segment_pointer = self.SEGMENTS[self.segment]
             return (
                 f'@{self.i}\n'
@@ -38,14 +38,18 @@ class MemorySegment():
                 f'A=D+M\n'
                 f'D=M\n'
             )
-        else:
+        elif self.segment == 'temp':
             return (
                 f'@{5 + self.i}\n'
                 f'D=M\n'
             )
-        
+        elif self.segment == 'pointer' and self.i == 0:
+            return '@3\nD=M\n'
+        elif self.segment == 'pointer' and self.i == 1:
+            return '@4\nD=M\n'
+
     def _put_target_address_into_R13(self):
-        if self.segment != 'temp':
+        if self.segment not in ['temp', 'pointer']:
             segment_pointer = self.SEGMENTS[self.segment]
             s = (
                 f'@{self.i}\n'
@@ -53,11 +57,16 @@ class MemorySegment():
                 f'@{segment_pointer}\n'
                 f'D=D+M\n'
             )
-        else:
+        elif self.segment == 'temp':
             s = (
                 f'@{5 + self.i}\n'
                 f'D=A\n'
             )
+        elif self.segment == 'pointer' and self.i == 0:
+            s = '@3\nD=A\n'
+        elif self.segment == 'pointer' and self.i == 1:
+            s ='@4\nD=A\n'
+
         return s + '@R13\nM=D\n'
         
     def _push_constant(self) -> str:
@@ -66,7 +75,7 @@ class MemorySegment():
             # Set D register to constant
             f'@{self.i}\n'
             f'D=A\n'
-            f'{self._put_D_At_pointer_address()}'            
+            f'{self._put_D_at_pointer_address()}'            
             f'{self._increase_stack_pointer()}'
         )
 
@@ -76,17 +85,14 @@ class MemorySegment():
         """Push the value of segment[index] onto the stack."""
 
         s = (
-            f'{self._put_pushed_value_into_D()}'
-            f'{self._put_D_At_pointer_address()}'            
+            f'{self._put_target_push_value_into_D()}'
+            f'{self._put_D_at_pointer_address()}'            
             f'{self._increase_stack_pointer()}'
         )
         return s
     
     def _basic_pop_operation(self):
         """Pops the top stack value and stores it in segment[index]"""
-
-        # Note
-
         s = (
             f'{self._put_target_address_into_R13()}'
             f'{self._decrease_stack_pointer()}'
@@ -104,28 +110,18 @@ class MemorySegment():
 
 
     def translate_memory(self):
-
+        
         if self.segment == 'constant':
             return self._push_constant().split('\n')
-        
-        elif self.segment in ['local', 'argument', 'this', 'that', 'temp']:
-            
-            # Check that temp is between 5-12
-            if self.segment == 'temp':
-                assert self.i >= 0 and self.i <=7, f'Temp only goes 5-12'
+                    
+        # Check that temp is between 5-12
+        if self.segment == 'temp':
+            assert self.i >= 0 and self.i <=7, f'Temp only goes 5-12'
 
-            if self.op == 'push':
-                return self._basic_push_operation().split('\n')
-            elif self.op == 'pop':
-                return self._basic_pop_operation().split('\n')
-            else:
-                raise ValueError(
-                    f"{self.op} {self.segment} {self.i} couldn't be mapped."
-                    )
-        
-
-        
-
+        if self.op == 'push':
+            return self._basic_push_operation().split('\n')
+        elif self.op == 'pop':
+            return self._basic_pop_operation().split('\n')           
         else:
             raise ValueError(
                     f"{self.op} {self.segment} {self.i} couldn't be mapped."
