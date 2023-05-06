@@ -12,46 +12,73 @@ class MemorySegment():
 
     def __init__(self, line: str):
         self.op, self.segment, self.i = line.split()
+        self.i = int(self.i)
 
+    def _increase_stack_pointer(self):
+        return '@0\nM=M+1\n'
 
+    def _decrease_stack_pointer(self):
+        return '@0\nM=M-1\n'
+
+    def _put_D_At_pointer_address(self):
+        """Sets the next available pointer location to the D-register value."""
+        return '@0\nA=M\nM=D\n'    
+
+    def _put_pushed_value_into_D(self):
+        """
+        Puts the value of segment[index] into D-register.
+        addr= SegmentPointer+i (unless temp). Then D=*addr.
+        """
+        if self.segment != 'temp':
+            segment_pointer = self.SEGMENTS[self.segment]
+            return (
+                f'@{self.i}\n'
+                f'D=A\n'
+                f'@{segment_pointer}\n'
+                f'A=D+M\n'
+                f'D=M\n'
+            )
+        else:
+            return (
+                f'@{5 + self.i}\n'
+                f'D=M\n'
+            )
+        
+    def _put_target_address_into_R13(self):
+        if self.segment != 'temp':
+            segment_pointer = self.SEGMENTS[self.segment]
+            s = (
+                f'@{self.i}\n'
+                f'D=A\n'
+                f'@{segment_pointer}\n'
+                f'D=D+M\n'
+            )
+        else:
+            s = (
+                f'@{5 + self.i}\n'
+                f'D=A\n'
+            )
+        return s + '@R13\nM=D\n'
+        
     def _push_constant(self) -> str:
         """Supplies the specified constant to the stack."""
         s = (
             # Set D register to constant
             f'@{self.i}\n'
             f'D=A\n'
-
-            # *SP=i by going to address stored in RAM[0
-            f'@0\n'
-            f'A=M\n'
-            f'M=D\n'
-            
-            # SP++
-            f'@0\n'
-            f'M=M+1\n'
+            f'{self._put_D_At_pointer_address()}'            
+            f'{self._increase_stack_pointer()}'
         )
+
         return s
-
-
+    
     def _basic_push_operation(self):
         """Push the value of segment[index] onto the stack."""
-        segment_pointer = self.SEGMENTS[self.segment] + self.i # address
+
         s = (
-            # D=i
-            f'@{self.i}\n'
-            f'D=A\n'
-
-            # (addr = SegmentPointer+i) and (D=*addr)
-            f'@{segment_pointer}\n'
-            f'A=D+M\n'
-            f'D=M'
-
-            f'@0\n'     # *SP=D=*addr
-            f'A=M\n'
-            f'M=D\n'            
-            
-            f'@0\n'     # SP++
-            f'M=M+1\n'
+            f'{self._put_pushed_value_into_D()}'
+            f'{self._put_D_At_pointer_address()}'            
+            f'{self._increase_stack_pointer()}'
         )
         return s
     
@@ -60,38 +87,18 @@ class MemorySegment():
 
         # Note
 
-        segment_pointer = self.SEGMENTS[self.segment] + self.i # address
         s = (
-            
-            # 1. Get the value from the stack to a register
-            
-            # SP--
-            f'@0\n' 
-            f'M=M-1\n'
+            f'{self._put_target_address_into_R13()}'
+            f'{self._decrease_stack_pointer()}'
 
-            # @R13=*SP
+            # Get value from stack
             f'A=M\n'
             f'D=M\n'
+
+            # Place value from stack at the correct address
             f'@R13\n'
+            f'A=M\n'
             f'M=D\n'
-
-            # D=i
-            f'@{self.i}\n'
-            f'D=A\n'
-
-            # (addr = SegmentPointer+i) and (D=*addr)
-            f'@{segment_pointer}\n'
-            f'A=D+M\n'
-
-
-
-
-
-
-
-
-
-
         )
         return s
 
@@ -101,7 +108,12 @@ class MemorySegment():
         if self.segment == 'constant':
             return self._push_constant().split('\n')
         
-        elif self.segment in ['local', 'argument', 'this', 'that']:
+        elif self.segment in ['local', 'argument', 'this', 'that', 'temp']:
+            
+            # Check that temp is between 5-12
+            if self.segment == 'temp':
+                assert self.i >= 0 and self.i <=7, f'Temp only goes 5-12'
+
             if self.op == 'push':
                 return self._basic_push_operation().split('\n')
             elif self.op == 'pop':
@@ -110,7 +122,14 @@ class MemorySegment():
                 raise ValueError(
                     f"{self.op} {self.segment} {self.i} couldn't be mapped."
                     )
+        
 
+        
+
+        else:
+            raise ValueError(
+                    f"{self.op} {self.segment} {self.i} couldn't be mapped."
+                    )
 
 
 
