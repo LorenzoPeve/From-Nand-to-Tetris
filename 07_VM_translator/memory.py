@@ -117,7 +117,7 @@ class MemorySegment():
             f'A=M\n'
             f'D=M\n'
             f'@{self.fname}.{self.i}\n'
-            f'M=D\n'    
+            f'M=D\n'
         )
 
     def _static_push_operation(self):
