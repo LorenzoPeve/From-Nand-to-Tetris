@@ -116,7 +116,7 @@ class Operation:
         
         self.ins += s
 
-    def translate_operations(self) -> list[str]:
+    def translate_operations(self): # -> list[str]:
         """
         Translates and arithmetic or logical operation by popping the
         operand(s) from the stack and storing the resulting value back in the
