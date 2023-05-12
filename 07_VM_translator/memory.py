@@ -116,14 +116,14 @@ class MemorySegment():
             f'@0\n'
             f'A=M\n'
             f'D=M\n'
-            f'@{self.fname}.{self.i}\n'
+            f'@{self.fname}.{self.i}\n' # Foo.vm pop static 5 Foo.5
             f'M=D\n'
         )
 
     def _static_push_operation(self):
         "Pushes value from global space into stack"
         return (         
-            f'@{self.fname}.{self.i}\n'
+            f'@{self.fname}.{self.i}\n' # Foo.vm push static 5 Foo.5
             f'D=M\n'
             f'@0\n'
             f'A=M\n'
