@@ -22,10 +22,8 @@ class Reader():
                 line = line[:idx]
                 data[i] = line.strip()
 
-
     def remove_whitespace_within(self, data):  # data: list[str]) -> list:
         return [" ".join(s.strip().split()) for s in data]
-
 
     def read(self): # -> list:
         with open(self.fpath) as f:
