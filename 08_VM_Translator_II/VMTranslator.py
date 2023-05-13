@@ -3,74 +3,97 @@ import os
 
 from reader import Reader
 from operations import Operation
-from memory import  MemorySegment
+from memory import MemorySegment
 
 
-if len(sys.argv[1].split('.')) > 1:
+def _get_filename(filepath) -> str:
+    return os.path.basename(filepath)
 
-    r = Reader(sys.argv[1])
-    fname = sys.argv[1].split('.')[0]
+
+def _write_new_file_with_extension(filepath, data):
+    """
+    Writes a new file with the same name as the given file and
+    ".asm" extension.
+    """
+    filename, _ = os.path.splitext(filepath)
+    new_path = filename + '.asm'
+
+    with open(new_path, "w") as file:
+        for i, string in enumerate(data):
+            if i == len(data)-1:
+                file.write(data)
+                continue
+            file.write(string + '\n')
+
+
+def _is_arith_operation(s: str) -> bool:
+    """Returns True if line is an arithmetic operation."""
+    if s in Operation.allowed:
+        return True
+    return False
+
+
+def _is_memory_alloc(s: str) -> bool:
+    """Returns True if line is a memory operation."""
+    if s.startswith('push') or s.startswith('pop'):
+        return True
+    return False
+
+
+def _is_branching_step(s: str) -> bool:
+    """Returns True if line is a branching command."""
+    if (s.startswith('label') or
+        s.startswith('if-goto') or
+            s.startswith('goto')):
+
+        return True
+    return False
+
+
+def translate_file(filepath: str):  # -> list[str]
+    """Initializes reader and translates a .vm file into a list[str]"""
+    r = Reader(filepath)
+    fname = _get_filename(filepath)
     data = r.read()
 
     translated = []
     for line in data:
         translated.append(f'// {line}')
-        try:
+
+        if _is_arith_operation(line):
             op = Operation(line)
             t = op.translate_operations()
 
-        except ValueError as e:
-            try:
-                m = MemorySegment(line, fname)
-                t = m.translate_memory()
-            except Exception as e:
-                raise Exception
-        finally:
-            translated.extend(t)
+        elif _is_memory_alloc(line):
+            m = MemorySegment(line, fname)
+            t = m.translate_memory()
+        else:
+            raise Exception(f'Line couldnt be translated: {line}')
+
+        translated.extend(t)
 
     translated = [t for t in translated if t != '']
-    translated.extend(['(END)', '@END', '0;JMP']) # Infinite loop
+    return translated
 
-else:
-    
-    files=  [f for f in os.listdir(sys.argv[1]) if f[-3:] == '.vm']
 
-    for file in files:
-        
-        # Read file
-        r = Reader(os.path.join(sys.argv[1], file))
-        fname = file.split('.')[0]
-        data = r.read()
-        translated = []
+is_dir = os.path.isdir(sys.argv[1])
 
-        for line in data:
-            translated.append(f'// {line}')
-            try:
-                op = Operation(line)
-                t = op.translate_operations()
+if not is_dir:
 
-            except ValueError as e:
-                try:
-                    m = MemorySegment(line, fname)
-                    t = m.translate_memory()
-                except Exception as e:
-                    raise Exception
-            finally:
-                translated.extend(t)
-    
-        translated = [t for t in translated if len(t)>1]
-        translated.extend(['(END)', '@END', '0;JMP']) # Infinite loop
+    translated = translate_file(sys.argv[1])
+    translated.extend(['(END)', '@END', '0;JMP'])  # Infinite loop
+    _write_new_file_with_extension(sys.argv[1], translated)
 
-        with open(os.path.join(sys.argv[1], fname) + '.asm', 'w') as file:
-            for i, string in  enumerate(translated):
-                if i == len(translated)-1:
-                    file.write(string)
-                    continue
-                file.write(string + '\n')
+# if len(sys.argv[1].split('.')) > 1:
 
-with open(fname + '.asm', 'w') as file:
-    for i, string in  enumerate(translated):
-        if i == len(translated)-1:
-            file.write(string)
-            continue
-        file.write(string + '\n')
+
+#     translated = [t for t in translated if t != '']
+#     translated.extend(['(END)', '@END', '0;JMP']) # Infinite loop
+
+
+# with open(fname + '.asm', 'w') as file:
+#     for i, string in  enumerate(translated):
+#         if i == len(translated)-1:
+#             file.write(string)
+#             continue
+#         file.write(string + '\n')
