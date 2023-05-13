@@ -5,6 +5,8 @@ from reader import Reader
 from operations import Operation
 from memory import MemorySegment
 from branching import  Branch
+from functions import Function
+
 
 def _get_filename(filepath) -> str:
     return os.path.basename(filepath)
@@ -40,6 +42,13 @@ def _is_memory_alloc(s: str) -> bool:
     return False
 
 
+def _is_function(s: str) -> bool:
+    """Returns True if line is a function definition or function call."""
+    if s.startswith('call') or s.startswith('function'):
+        return True
+    return False
+
+
 def _is_branching_step(s: str) -> bool:
     """Returns True if line is a branching command."""
     if (s.startswith('label') or
@@ -71,6 +80,11 @@ def translate_file(filepath: str):  # -> list[str]
         elif _is_branching_step(line):
             b = Branch(line)
             t = b.translate_branch()
+
+        elif _is_branching_step(line):
+            f = Function(line)
+            t = f.translate_branch()
+
         else:
             raise Exception(f'Line couldnt be translated: {line}')
 
