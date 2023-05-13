@@ -1,5 +1,7 @@
 from reader import Reader
 from memory import  MemorySegment
+from branching import  Branch
+
 
 def test_remove_whitespace_within():
 
@@ -14,7 +16,14 @@ def test_remove_whitespace_within():
 
 
 
-c = MemorySegment('push constant 5')
+c = MemorySegment('push constant 5', 'hey')
 assert c.op == 'push'
 assert c.segment == 'constant'
 assert c.i == 5
+
+
+b = Branch('label LOOP_START')
+print(b.translate_branch())
+
+b = Branch('goto END_LOOP')
+print(b.translate_branch())
