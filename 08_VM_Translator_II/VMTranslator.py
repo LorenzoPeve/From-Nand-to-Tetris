@@ -4,7 +4,7 @@ import os
 from reader import Reader
 from operations import Operation
 from memory import MemorySegment
-
+from branching import  Branch
 
 def _get_filename(filepath) -> str:
     return os.path.basename(filepath)
@@ -21,7 +21,7 @@ def _write_new_file_with_extension(filepath, data):
     with open(new_path, "w") as file:
         for i, string in enumerate(data):
             if i == len(data)-1:
-                file.write(data)
+                file.write(string)
                 continue
             file.write(string + '\n')
 
@@ -67,6 +67,10 @@ def translate_file(filepath: str):  # -> list[str]
         elif _is_memory_alloc(line):
             m = MemorySegment(line, fname)
             t = m.translate_memory()
+
+        elif _is_branching_step(line):
+            b = Branch(line)
+            t = b.translate_branch()
         else:
             raise Exception(f'Line couldnt be translated: {line}')
 
@@ -82,6 +86,7 @@ if not is_dir:
 
     translated = translate_file(sys.argv[1])
     translated.extend(['(END)', '@END', '0;JMP'])  # Infinite loop
+    print(translated)
     _write_new_file_with_extension(sys.argv[1], translated)
 
 # if len(sys.argv[1].split('.')) > 1:
