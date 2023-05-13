@@ -3,12 +3,12 @@ class Branch:
     def __init__(self, command: str) -> None:
         self.command = command
 
-    def translate_branch(self):        
-        
+    def translate_branch(self):
+
         if self.command.startswith('label'):
             s = self.command.replace('label ', "")
             return [f'({s})']
-        
+
         elif self.command.startswith('goto'):
             s = self.command.replace('goto ', "")
             s = (
@@ -16,7 +16,7 @@ class Branch:
                 f'0; JMP\n'
             )
             return s.split('\n')[:-1]
-        
+
         elif self.command.startswith('if-goto'):
             label = self.command.replace('if-goto ', "")
             s = (
