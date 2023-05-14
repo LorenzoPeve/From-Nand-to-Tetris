@@ -31,7 +31,7 @@ assert c.i == 5
 # f = Function('function mult 2')
 # print(f.translate())
 
-f = Function('call mult 3')
+f = Function('return')
 data = f.translate()
 
 with open('test.txt', "w") as file:
