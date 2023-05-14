@@ -124,4 +124,5 @@ else:
         translated.extend(t)
 
     translated.extend(['(END)', '@END', '0;JMP'])
-    _write_new_file_with_extension(sys.argv[1], translated)
+    path = os.path.join(sys.argv[1], sys.argv[1] + '.vm')
+    _write_new_file_with_extension(path, translated)
