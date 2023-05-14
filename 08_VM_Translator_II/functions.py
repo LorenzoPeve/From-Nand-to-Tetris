@@ -106,6 +106,11 @@ class Function:
             f'@13\n'
             f'M=D\n'
 
+            # RAM[14] = RET = return address
+            f'{self._point_to_frame_minus_n(5)}'
+            f'@14\n'
+            f'M=D\n'
+
             # Push value from stack to (i.e., *ARG = pop())
             f'@0\n'
             f'M=M-1\n'
@@ -139,11 +144,6 @@ class Function:
             # Restore LCL of the caller
             f'{self._point_to_frame_minus_n(4)}'
             f'@1\n'
-            f'M=D\n'
-
-            # RAM[14] = RET = return address
-            f'{self._point_to_frame_minus_n(5)}'
-            f'@14\n'
             f'M=D\n'
 
             # JUMP
