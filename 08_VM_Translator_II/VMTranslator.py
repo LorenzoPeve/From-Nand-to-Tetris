@@ -99,23 +99,29 @@ def translate_file(filepath: str):  # -> list[str]
 
 is_dir = os.path.isdir(sys.argv[1])
 
-if not is_dir:
-
+if not is_dir:    
     translated = translate_file(sys.argv[1])
     translated.extend(['(END)', '@END', '0;JMP'])  # Infinite loop
     print(translated)
     _write_new_file_with_extension(sys.argv[1], translated)
 
-# if len(sys.argv[1].split('.')) > 1:
+else:
+    vm_files = [f for f in os.listdir(sys.argv[1]) if f.endswith('.vm')]
+    
+    # Booting Steps
+    translated = ['// Booting: SP = 256']    
+    translated.extend(['@256', 'D=A', '@0', 'M=D'])
+        
+    # Calling Sys.init Steps
+    translated.append('// Call Sys.init')
+    f = Function('call Sys.init 0')
+    translated.extend(f.translate()[::-1])
 
+    translated.append('// Finished Booting')
+    for file in vm_files:
+        filepath = os.path.join(sys.argv[1], file)
+        t = translate_file(filepath)
+        translated.extend(t)
 
-#     translated = [t for t in translated if t != '']
-#     translated.extend(['(END)', '@END', '0;JMP']) # Infinite loop
-
-
-# with open(fname + '.asm', 'w') as file:
-#     for i, string in  enumerate(translated):
-#         if i == len(translated)-1:
-#             file.write(string)
-#             continue
-#         file.write(string + '\n')
+    translated.extend(['(END)', '@END', '0;JMP'])
+    _write_new_file_with_extension(sys.argv[1], translated)
