@@ -92,7 +92,7 @@ class Function:
         return (
             f'@{n}\n'
             f'D=A\n'
-            f'@5\n'
+            f'@13\n'
             f'A=M-D\n'
             f'D=M\n'
         )
@@ -100,10 +100,10 @@ class Function:
     def _return_f(self): # -> str
         s = (
             
-            # RAM[5] = LCL = RAM[1]. Use RAM[5] as temp variable
+            # RAM[13] = LCL = RAM[1]. Use RAM[13] as temp variable
             f'@1\n'
             f'D=M\n'
-            f'@5\n'
+            f'@13\n'
             f'M=D\n'
 
             # Push value from stack to (i.e., *ARG = pop())
@@ -141,13 +141,13 @@ class Function:
             f'@1\n'
             f'M=D\n'
 
-            # RAM[6] = RET = return address
+            # RAM[14] = RET = return address
             f'{self._point_to_frame_minus_n(5)}'
-            f'@6\n'
+            f'@14\n'
             f'M=D\n'
 
             # JUMP
-            f'@6\n'
+            f'@14\n'
             f'A=M\n'
             f'0;JMP\n'
         )
