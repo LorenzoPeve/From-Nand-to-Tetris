@@ -44,7 +44,10 @@ def _is_memory_alloc(s: str) -> bool:
 
 def _is_function(s: str) -> bool:
     """Returns True if line is a function definition or function call."""
-    if s.startswith('call') or s.startswith('function'):
+    if (s.startswith('call') or
+        s.startswith('function') or
+        s.startswith('return')):
+
         return True
     return False
 
@@ -86,8 +89,7 @@ def translate_file(filepath: str):  # -> list[str]
             t = f.translate()
 
         else:
-            t = [line]
-            #raise Exception(f'Line couldnt be translated: {line}')
+            raise Exception(f'Line couldnt be translated: {line}')
 
         translated.extend(t)
 
