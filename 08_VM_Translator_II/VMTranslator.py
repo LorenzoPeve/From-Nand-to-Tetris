@@ -81,12 +81,13 @@ def translate_file(filepath: str):  # -> list[str]
             b = Branch(line)
             t = b.translate_branch()
 
-        elif _is_branching_step(line):
+        elif _is_function(line):
             f = Function(line)
-            t = f.translate_branch()
+            t = f.translate()
 
         else:
-            raise Exception(f'Line couldnt be translated: {line}')
+            t = [line]
+            #raise Exception(f'Line couldnt be translated: {line}')
 
         translated.extend(t)
 
