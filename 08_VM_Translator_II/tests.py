@@ -1,7 +1,7 @@
 from reader import Reader
 from memory import  MemorySegment
 from branching import  Branch
-
+from functions import Function
 
 def test_remove_whitespace_within():
 
@@ -22,8 +22,21 @@ assert c.segment == 'constant'
 assert c.i == 5
 
 
-b = Branch('label LOOP_START')
-print(b.translate_branch())
+# b = Branch('label LOOP_START')
+# print(b.translate_branch())
 
-b = Branch('goto END_LOOP')
-print(b.translate_branch())
+# b = Branch('goto END_LOOP')
+# print(b.translate_branch())
+
+# f = Function('function mult 2')
+# print(f.translate())
+
+f = Function('call mult 3')
+data = f.translate()
+
+with open('test.txt', "w") as file:
+    for i, string in enumerate(data):
+        if i == len(data)-1:
+            file.write(string)
+            continue
+        file.write(string + '\n')
