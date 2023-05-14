@@ -115,7 +115,7 @@ else:
     # Calling Sys.init Steps
     translated.append('// Call Sys.init')
     f = Function('call Sys.init 0')
-    translated.extend(f.translate()[::-1])
+    translated.extend(f.translate())
 
     translated.append('// Finished Booting')
     for file in vm_files:
