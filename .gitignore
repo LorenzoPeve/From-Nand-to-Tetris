@@ -1,6 +1,7 @@
 /*/output/*
 /*/scrap.*
 *.zip
+/08_VM_Translator_II/*.asm
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
