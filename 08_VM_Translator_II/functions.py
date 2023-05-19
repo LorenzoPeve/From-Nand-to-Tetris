@@ -22,8 +22,6 @@ class Function:
             s+= self._increase_stack_pointer()
 
         return s
-
-
     
     def _reposition_arg(self, n):
         """Reposition ARG=SP-n-5"""
