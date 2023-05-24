@@ -28,16 +28,16 @@ class Game {
 
     method void handle_input() {
       
-      let key = Keyboard.keyPressed();
-      //
-      if (key = 81) { // Q
+        let key = Keyboard.keyPressed();
+        //
+        if (key = 81) { // Q
         let quit = true;
-      }
-      if (key = 82) { // R
+        }
+        if (key = 82) { // R
         let reset = true;
-      }      
+        }      
 
-      return;
+        return;
    }
 
     method void play() {
