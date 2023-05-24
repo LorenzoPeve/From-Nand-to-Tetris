@@ -16,7 +16,7 @@ class Game {
         // Initializes game and sets the board      
         do Cards.draw_board();
         do initialize_position();
-
+        let current_pos = 0;
         return this;
     }
 
@@ -43,22 +43,20 @@ class Game {
     method void play() {
         var int counter;
 
-        do Output.moveCursor(20, 23);
-        let counter = 0;
-
         while (~quit) {            
             do handle_input();
             
-            if (counter > 200) {
-                let counter = 0;
+            if (current_pos > 31) {
+                let current_pos = 0;
             }
             
             // Erases the previously displayed characters
+            do Output.moveCursor(20, 26);
             do Output.moveCursor(20, 25);
             do Output.moveCursor(20, 24);
             do Output.moveCursor(20, 23);
-            do Output.printInt(counter);
-            let counter = counter + 1;
+            do Output.printInt(positions[current_pos]);
+            let current_pos = current_pos + 1;
             do Sys.wait(100);
 
 
