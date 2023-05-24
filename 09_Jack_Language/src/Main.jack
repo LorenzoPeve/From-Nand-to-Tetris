@@ -1,0 +1,15 @@
+// Save those locations and having a moving arrow
+// 48 x 50 
+
+class Main {
+    function void main() {
+        var Game game;
+        let game = Game.new();
+        do game.play();
+        do game.dispose();
+        do Screen.clearScreen();
+        return;
+    }
+}
+
+// do Cards.draw_cell_pointer(3200);
