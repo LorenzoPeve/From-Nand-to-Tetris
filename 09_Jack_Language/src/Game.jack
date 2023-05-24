@@ -1,0 +1,121 @@
+// Only one instance of a game can exist at a time. Variables will be held as
+// You need to think about a loop
+
+
+class Game {
+
+    field char key;
+    field boolean quit;
+    field boolean reset;
+    field Array positions;
+    field int current_pos;
+
+    constructor Game new() {  
+        let key = 0;
+        
+        // Initializes game and sets the board      
+        do Cards.draw_board();
+        do initialize_position();
+
+        return this;
+    }
+
+    method void dispose() {
+        // dispose of (deallocate) objects      
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method void handle_input() {
+      
+      let key = Keyboard.keyPressed();
+      //
+      if (key = 81) { // Q
+        let quit = true;
+      }
+      if (key = 82) { // R
+        let reset = true;
+      }      
+
+      return;
+   }
+
+    method void play() {
+        var int counter;
+
+        do Output.moveCursor(20, 23);
+        let counter = 0;
+
+        while (~quit) {            
+            do handle_input();
+            
+            if (counter > 200) {
+                let counter = 0;
+            }
+            
+            // Erases the previously displayed characters
+            do Output.moveCursor(20, 25);
+            do Output.moveCursor(20, 24);
+            do Output.moveCursor(20, 23);
+            do Output.printInt(counter);
+            let counter = counter + 1;
+            do Sys.wait(100);
+
+
+        }
+        // Check Reset
+
+
+
+        // Check Exit
+
+
+
+
+        return;
+    
+    }
+
+    method void initialize_position() {
+            
+        let positions = Array.new(32);
+        let positions[0] = 0;
+        let positions[1] = 4;
+        let positions[2] = 8;
+        let positions[3] = 12;
+        let positions[4] = 16;
+        let positions[5] = 20;
+        let positions[6] = 24;
+        let positions[7] = 28;
+        let positions[8] = 1600;
+        let positions[9] = 1604;
+        let positions[10] = 1608;
+        let positions[11] = 1612;
+        let positions[12] = 1616;
+        let positions[13] = 1620;
+        let positions[14] = 1624;
+        let positions[15] = 1628;
+        let positions[16] = 3200;
+        let positions[17] = 3204;
+        let positions[18] = 3208;
+        let positions[19] = 3212;
+        let positions[20] = 3216;
+        let positions[21] = 3220;
+        let positions[22] = 3224;
+        let positions[23] = 3228;
+        let positions[24] = 4800;
+        let positions[25] = 4804;
+        let positions[26] = 4808;
+        let positions[27] = 4812;
+        let positions[28] = 4816;
+        let positions[29] = 4820;
+        let positions[30] = 4824;
+        let positions[31] = 4828;
+        return;
+    }
+
+
+
+
+
+}
