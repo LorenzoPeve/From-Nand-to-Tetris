@@ -1,4 +1,4 @@
-class Cards {
+class Graphics {
 
 function void draw_card(int location) {
 	var int memAddress; 

@@ -12,4 +12,4 @@ class Main {
     }
 }
 
-// do Cards.draw_cell_pointer(3200);
+// do Graphics.draw_cell_pointer(3200);

@@ -14,10 +14,9 @@ class Game {
     constructor Game new() {  
         
         // Initializes game and sets the board      
-        // do Cards.draw_board();
+        // do Graphics.draw_board();
         do initialize_position();
         do show_welcome_message();
-        
         return this;
     }
 
@@ -46,9 +45,9 @@ class Game {
 
     method void play() {
         var int counter;
-
-
-
+        let quit = false;
+        let reset = false;
+        let start = false;
 
         while (~quit) {            
             do handle_input();
@@ -68,23 +67,18 @@ class Game {
 
             if ((start) | (reset)){
                 do start_game();
+                let start = false;
+                let reset = false;
             }
 
+
         }
-           
-            // Start game
-            // if ((start) | (reset)){
-            //    do start_game();
-            // } 
-
-
-        return;
-    
+        return;    
     }
 
     method void start_game(){
         do Screen.clearScreen();
-        do Cards.draw_board();
+        do Graphics.draw_board();
         do show_instructions();
         return;
     }
@@ -117,9 +111,9 @@ class Game {
     method void show_instructions() {
         // Shows instructions at bottom of the page
         do Output.moveCursor(21, 0);
-        do Output.printString("Use LEFT & RIGHT-ARROWS to move spot selector.")
+        do Output.printString("Use LEFT & RIGHT-ARROWS to move spot selector.");
         do Output.println();
-        do Output.printString("Then PRESS ENTER to click");
+        do Output.printString("Then PRESS ENTER to click.");
         return;
     }
 
