@@ -1,3 +1,8 @@
+# Use user input to move cross (left to right)
+
+
+
+
 0. Create a folder for your program. Let's call it the program folder.
 
 1. Write your Jack program – a set of one or more Jack classes – each stored in

@@ -5,18 +5,19 @@
 class Game {
 
     field char key;
+    field boolean start;
     field boolean quit;
-    field boolean reset;
+    field boolean reset;   // DO reset
     field Array positions;
     field int current_pos;
 
     constructor Game new() {  
-        let key = 0;
         
         // Initializes game and sets the board      
-        do Cards.draw_board();
+        // do Cards.draw_board();
         do initialize_position();
-        let current_pos = 0;
+        do show_welcome_message();
+        
         return this;
     }
 
@@ -31,17 +32,23 @@ class Game {
         let key = Keyboard.keyPressed();
         //
         if (key = 81) { // Q
-        let quit = true;
+            let quit = true;
         }
         if (key = 82) { // R
-        let reset = true;
-        }      
+            let reset = true;
+        }
+        if (key = 83) { // S
+            let start = true;
+        }
 
         return;
    }
 
     method void play() {
         var int counter;
+
+
+
 
         while (~quit) {            
             do handle_input();
@@ -59,19 +66,61 @@ class Game {
             let current_pos = current_pos + 1;
             do Sys.wait(100);
 
+            if ((start) | (reset)){
+                do start_game();
+            }
 
         }
-        // Check Reset
-
-
-
-        // Check Exit
-
-
+           
+            // Start game
+            // if ((start) | (reset)){
+            //    do start_game();
+            // } 
 
 
         return;
     
+    }
+
+    method void start_game(){
+        do Screen.clearScreen();
+        do Cards.draw_board();
+        do show_instructions();
+        return;
+    }
+
+
+    method void show_welcome_message() {
+        // Prints the welcome message onto the screen
+        do Output.printString("Welcome to MineSweeper: 'Boom or Bust Edition!'");
+        do Output.println();
+        do Output.println();
+        do Output.println();
+        do Output.printString("Brace yourself for a pixelated adventure where you'll navigate atreacherous minefield without losing any limbs.");
+        do Output.println();
+        do Output.println();
+        do Output.printString("Click wrong, and boom! It's a game of wits, luck, and occasionalexplosions.");
+        do Output.println();
+        do Output.println();
+        do Output.printString("Are you ready to outsmart the mines and claim victory?");
+        do Output.println();
+        do Output.println();
+        do Output.println();
+        do Output.printString("Press S to START");
+        do Output.println();
+        do Output.printString("Press Q ANYTIME to EXIT");
+        do Output.println();
+        do Output.printString("Press R to RESTART");
+        return;
+    }
+
+    method void show_instructions() {
+        // Shows instructions at bottom of the page
+        do Output.moveCursor(21, 0);
+        do Output.printString("Use LEFT & RIGHT-ARROWS to move spot selector.")
+        do Output.println();
+        do Output.printString("Then PRESS ENTER to click");
+        return;
     }
 
     method void initialize_position() {
