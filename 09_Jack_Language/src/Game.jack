@@ -73,6 +73,12 @@ class Game {
 
 
         }
+        do Screen.clearScreen();
+        do Graphics.draw_end(1612);
+
+        
+        
+        
         return;    
     }
 

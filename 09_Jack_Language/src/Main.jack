@@ -7,7 +7,7 @@ class Main {
         let game = Game.new();
         do game.play();
         do game.dispose();
-        do Screen.clearScreen();
+        //do Screen.clearScreen();
         return;
     }
 }
