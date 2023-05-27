@@ -1,35 +1,34 @@
-// Only one instance of a game can exist at a time. Variables will be held as
-// You need to think about a loop
-
-
 class Game {
 
-    field char key;
-    field boolean start;
-    field boolean quit;
-    field boolean reset;   // DO reset
     field Array positions;
     field int current_pos;
+    field boolean start;
+    field boolean quit;
+    field boolean reset;
+    field boolean leftArrowPressed;
+    field boolean rightArrowPressed;
 
-    constructor Game new() {  
-        
+    constructor Game new() {        
         // Initializes game and sets the board      
-        // do Graphics.draw_board();
+
         do initialize_position();
         do show_welcome_message();
         return this;
     }
 
     method void dispose() {
-        // dispose of (deallocate) objects      
+        // Dispose of (deallocate) objects
+
         do Memory.deAlloc(this);
         return;
     }
 
-    method void handle_input() {
-      
+    method int handle_input() {
+        // Starts, restarts, or terminates a game at any time
+        
+        var int key;
         let key = Keyboard.keyPressed();
-        //
+
         if (key = 81) { // Q
             let quit = true;
         }
@@ -39,38 +38,85 @@ class Game {
         if (key = 83) { // S
             let start = true;
         }
+        return key;
+    }
 
+    method int handle_selector() {
+        var int key;
+        let key = Keyboard.keyPressed();
+
+        if (key = 130) { // Left-arrow
+            let leftArrowPressed = true;
+        }
+        if (key = 132) { // Right-arrow
+            let rightArrowPressed = true;
+        }
+        return key;
+    }
+    
+    method void update_current_pos() {
+        if (leftArrowPressed) {
+            let current_pos = current_pos - 1;
+            if (current_pos < 0) {
+                let current_pos = 0;
+            }
+        }
+        if (rightArrowPressed) {
+            let current_pos = current_pos + 1;
+            if (current_pos > 31) {
+                let current_pos = 31;
+            }
+        }
+        let leftArrowPressed = false;
+        let rightArrowPressed = false;
         return;
-   }
+    }
 
     method void play() {
-        var int counter;
+        
+        var int last_key;
+        var int current_key;
+        var boolean dead;
+        let dead = false;
+
+        let last_key = 0;
+        let current_key = 1;
         let quit = false;
         let reset = false;
         let start = false;
+        let current_pos = 0;
+        let leftArrowPressed = false;
+        let rightArrowPressed = false;
 
         while (~quit) {            
-            do handle_input();
             
-            if (current_pos > 31) {
-                let current_pos = 0;
-            }
-            
-            // Erases the previously displayed characters
-            do Output.moveCursor(20, 26);
-            do Output.moveCursor(20, 25);
-            do Output.moveCursor(20, 24);
-            do Output.moveCursor(20, 23);
-            do Output.printInt(positions[current_pos]);
-            let current_pos = current_pos + 1;
-            do Sys.wait(100);
 
-            if ((start) | (reset)){
+            // Avoid the issue of the current position incrementing by more
+            // than one when the arrow keys are held down.
+            let current_key = handle_input();
+            if (~(current_key=last_key)){
+                do handle_selector();
+                do update_current_pos();
+            }
+
+          
+            do Graphics.draw_cell_selector(positions[current_pos]);
+
+            do Output.moveCursor(20, 0);
+            do Output.printInt(positions[current_pos]);
+
+            if (start){
                 do start_game();
                 let start = false;
+            }
+
+            if (reset){
                 let reset = false;
             }
+
+            let last_key = current_key;
         }
+
         return;
     }
 

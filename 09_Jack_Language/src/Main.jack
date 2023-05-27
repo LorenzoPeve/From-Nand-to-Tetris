@@ -7,7 +7,11 @@ class Main {
         let game = Game.new();
         do game.play();
         do game.dispose();
-        //do Screen.clearScreen();
+
+        // After quitting game
+        do Screen.clearScreen();
+        do Graphics.draw_end(1612);
+
         return;
     }
 }

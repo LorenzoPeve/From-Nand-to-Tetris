@@ -259,41 +259,41 @@ function void draw_cell_selector(int location) {
 function void draw_board() {
 
 	// Draws a 4x8 board of cards
-	do Cards.draw_card(0);
-	do Cards.draw_card(4);
-	do Cards.draw_card(8);
-	do Cards.draw_card(12);
-	do Cards.draw_card(16);
-	do Cards.draw_card(20);
-	do Cards.draw_card(24);
-	do Cards.draw_card(28);
+	do Graphics.draw_card(0);
+	do Graphics.draw_card(4);
+	do Graphics.draw_card(8);
+	do Graphics.draw_card(12);
+	do Graphics.draw_card(16);
+	do Graphics.draw_card(20);
+	do Graphics.draw_card(24);
+	do Graphics.draw_card(28);
 
-	do Cards.draw_card(1600);
-	do Cards.draw_card(1604);
-	do Cards.draw_card(1608);
-	do Cards.draw_card(1612);
-	do Cards.draw_card(1616);
-	do Cards.draw_card(1620);
-	do Cards.draw_card(1624);
-	do Cards.draw_card(1628);
+	do Graphics.draw_card(1600);
+	do Graphics.draw_card(1604);
+	do Graphics.draw_card(1608);
+	do Graphics.draw_card(1612);
+	do Graphics.draw_card(1616);
+	do Graphics.draw_card(1620);
+	do Graphics.draw_card(1624);
+	do Graphics.draw_card(1628);
 
-	do Cards.draw_card(3200);
-	do Cards.draw_card(3204);
-	do Cards.draw_card(3208);
-	do Cards.draw_card(3212);
-	do Cards.draw_card(3216);
-	do Cards.draw_card(3220);
-	do Cards.draw_card(3224);
-	do Cards.draw_card(3228);
+	do Graphics.draw_card(3200);
+	do Graphics.draw_card(3204);
+	do Graphics.draw_card(3208);
+	do Graphics.draw_card(3212);
+	do Graphics.draw_card(3216);
+	do Graphics.draw_card(3220);
+	do Graphics.draw_card(3224);
+	do Graphics.draw_card(3228);
 
-	do Cards.draw_card(4800);
-	do Cards.draw_card(4804);
-	do Cards.draw_card(4808);
-	do Cards.draw_card(4812);
-	do Cards.draw_card(4816);
-	do Cards.draw_card(4820);
-	do Cards.draw_card(4824);
-	do Cards.draw_card(4828);
+	do Graphics.draw_card(4800);
+	do Graphics.draw_card(4804);
+	do Graphics.draw_card(4808);
+	do Graphics.draw_card(4812);
+	do Graphics.draw_card(4816);
+	do Graphics.draw_card(4820);
+	do Graphics.draw_card(4824);
+	do Graphics.draw_card(4828);
 	return;
 }
 
@@ -402,9 +402,5 @@ function void draw_end(int location) {
 	do Memory.poke(memAddress +994, 0);
 	return;
 }
-
-
-
-
 
 }
