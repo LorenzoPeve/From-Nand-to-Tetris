@@ -70,16 +70,8 @@ class Game {
                 let start = false;
                 let reset = false;
             }
-
-
         }
-        do Screen.clearScreen();
-        do Graphics.draw_end(1612);
-
-        
-        
-        
-        return;    
+        return;
     }
 
     method void start_game(){
