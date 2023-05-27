@@ -1,7 +1,7 @@
 class Game {
 
     field Array positions;
-    field int current_pos;
+    field int current_position;
     field boolean start;
     field boolean quit;
     field boolean reset;
@@ -44,15 +44,15 @@ class Game {
         let key = Keyboard.keyPressed();
 
         if (key = 130) { // Left-arrow
-            let current_pos = current_pos - 1;
-            if (current_pos < 0) {
-                let current_pos = 0;
+            let current_position = current_position - 1;
+            if (current_position < 0) {
+                let current_position = 0;
             }
         }
         if (key = 132) { // Right-arrow
-            let current_pos = current_pos + 1;
-            if (current_pos > 31) {
-                let current_pos = 31;
+            let current_position = current_position + 1;
+            if (current_position > 31) {
+                let current_position = 31;
             }
         }
         return key;
@@ -70,7 +70,7 @@ class Game {
         let quit = false;
         let reset = false;
         let start = false;
-        let current_pos = 0;
+        let current_position = 0;
 
         while (~quit) {            
             
@@ -83,10 +83,10 @@ class Game {
             }
 
           
-            do Graphics.draw_cell_selector(positions[current_pos]);
+            do Graphics.draw_cell_selector(positions[current_position]);
 
             do Output.moveCursor(20, 0);
-            do Output.printInt(positions[current_pos]);
+            do Output.printInt(positions[current_position]);
 
             if (start){
                 do start_game();
