@@ -5,8 +5,6 @@ class Game {
     field boolean start;
     field boolean quit;
     field boolean reset;
-    field boolean leftArrowPressed;
-    field boolean rightArrowPressed;
 
     constructor Game new() {        
         // Initializes game and sets the board      
@@ -46,32 +44,20 @@ class Game {
         let key = Keyboard.keyPressed();
 
         if (key = 130) { // Left-arrow
-            let leftArrowPressed = true;
-        }
-        if (key = 132) { // Right-arrow
-            let rightArrowPressed = true;
-        }
-        return key;
-    }
-    
-    method void update_current_pos() {
-        if (leftArrowPressed) {
             let current_pos = current_pos - 1;
             if (current_pos < 0) {
                 let current_pos = 0;
             }
         }
-        if (rightArrowPressed) {
+        if (key = 132) { // Right-arrow
             let current_pos = current_pos + 1;
             if (current_pos > 31) {
                 let current_pos = 31;
             }
         }
-        let leftArrowPressed = false;
-        let rightArrowPressed = false;
-        return;
+        return key;
     }
-
+    
     method void play() {
         
         var int last_key;
@@ -85,8 +71,6 @@ class Game {
         let reset = false;
         let start = false;
         let current_pos = 0;
-        let leftArrowPressed = false;
-        let rightArrowPressed = false;
 
         while (~quit) {            
             
@@ -96,7 +80,6 @@ class Game {
             let current_key = handle_input();
             if (~(current_key=last_key)){
                 do handle_selector();
-                do update_current_pos();
             }
 
           
