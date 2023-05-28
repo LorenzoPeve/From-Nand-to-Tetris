@@ -1,0 +1,49 @@
+class RandomArray {
+
+    static Array game_cards;
+
+
+    let cards = Array.new(32);
+
+
+    method void initialize_array() {
+            
+        let positions = Array.new(32);
+        let positions[0] = 0;
+        let positions[1] = 4;
+        let positions[2] = 8;
+        let positions[3] = 12;
+        let positions[4] = 16;
+        let positions[5] = 20;
+        let positions[6] = 24;
+        let positions[7] = 28;
+        let positions[8] = 1600;
+        let positions[9] = 1604;
+        let positions[10] = 1608;
+        let positions[11] = 1612;
+        let positions[12] = 1616;
+        let positions[13] = 1620;
+        let positions[14] = 1624;
+        let positions[15] = 1628;
+        let positions[16] = 3200;
+        let positions[17] = 3204;
+        let positions[18] = 3208;
+        let positions[19] = 3212;
+        let positions[20] = 3216;
+        let positions[21] = 3220;
+        let positions[22] = 3224;
+        let positions[23] = 3228;
+        let positions[24] = 4800;
+        let positions[25] = 4804;
+        let positions[26] = 4808;
+        let positions[27] = 4812;
+        let positions[28] = 4816;
+        let positions[29] = 4820;
+        let positions[30] = 4824;
+        let positions[31] = 4828;
+        return;
+    }
+
+
+
+}
