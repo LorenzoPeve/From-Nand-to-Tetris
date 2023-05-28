@@ -112,6 +112,8 @@ class Game {
     }
 
     method void start_game(){
+        // Starts game by cleaning screen and setting up board
+
         do Screen.clearScreen();
         do Graphics.draw_board();
         do show_instructions();
@@ -121,6 +123,7 @@ class Game {
 
     method void show_welcome_message() {
         // Prints the welcome message onto the screen
+
         do Output.printString("Welcome to MineSweeper: 'Boom or Bust Edition!'");
         do Output.println();
         do Output.println();
@@ -145,6 +148,7 @@ class Game {
 
     method void show_instructions() {
         // Shows instructions at bottom of the page
+
         do Output.moveCursor(21, 0);
         do Output.printString("Use LEFT & RIGHT-ARROWS to move spot selector.");
         do Output.println();
@@ -153,7 +157,8 @@ class Game {
     }
 
     method void initialize_position() {
-            
+        // Stores the locations of the cards in the screen after experimentation
+
         let positions = Array.new(32);
         let positions[0] = 0;
         let positions[1] = 4;

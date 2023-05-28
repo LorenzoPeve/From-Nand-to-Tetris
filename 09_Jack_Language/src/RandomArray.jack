@@ -1,49 +1,73 @@
 class RandomArray {
 
-    static Array game_cards;
+
+    function Array getArray(){
+
+        var Array x;
+        var int n_bombs;
+        
+        let x = RandomArray.initialize_array();
+        let n_bombs = 0;
 
 
-    let cards = Array.new(32);
+        while (n_bombs<12){
+            let x = RandomArray.place_bomb(x, LCGRandom.randRange(0, 32));
+            let n_bombs  = n_bombs + 1;
+        }
 
-
-    method void initialize_array() {
-            
-        let positions = Array.new(32);
-        let positions[0] = 0;
-        let positions[1] = 4;
-        let positions[2] = 8;
-        let positions[3] = 12;
-        let positions[4] = 16;
-        let positions[5] = 20;
-        let positions[6] = 24;
-        let positions[7] = 28;
-        let positions[8] = 1600;
-        let positions[9] = 1604;
-        let positions[10] = 1608;
-        let positions[11] = 1612;
-        let positions[12] = 1616;
-        let positions[13] = 1620;
-        let positions[14] = 1624;
-        let positions[15] = 1628;
-        let positions[16] = 3200;
-        let positions[17] = 3204;
-        let positions[18] = 3208;
-        let positions[19] = 3212;
-        let positions[20] = 3216;
-        let positions[21] = 3220;
-        let positions[22] = 3224;
-        let positions[23] = 3228;
-        let positions[24] = 4800;
-        let positions[25] = 4804;
-        let positions[26] = 4808;
-        let positions[27] = 4812;
-        let positions[28] = 4816;
-        let positions[29] = 4820;
-        let positions[30] = 4824;
-        let positions[31] = 4828;
-        return;
+        return x;
     }
 
+    function Array initialize_array() {
+        // Initializes array to 99 (no bombs locations.)
+        var Array arr;    
+        var int counter;
+        
+        let arr = Array.new(32);
+        let counter = 0;
 
+        while (counter<32){
+            let arr[counter] = 99;
+            let counter  = counter +1;
+        }        
+        return arr;
+    }
+
+    function Array place_bomb(Array arr, int i){
+        // Adds bomb (i.e, = -1) to location i if it doesnt have a bomb already
+        var boolean exit;
+        var int offset;
+
+        if (i>15){
+            let offset = 1;
+        }
+        else {
+            let offset = -1;
+        }
+
+        let exit = false;
+        
+        while (~exit){
+
+            if (arr[i]=11){
+                let i = i + offset;
+            }
+            else {
+                let arr[i]=11;
+                let exit = true;
+            }
+            
+            // Ensure `i` is within bounds
+            if ((i>31)|(i<0)){
+                let i = 0;
+            }
+
+
+        return arr;
+        }
+
+
+
+    }
 
 }
