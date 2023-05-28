@@ -10,7 +10,7 @@ class RandomArray {
         let n_bombs = 0;
 
 
-        while (n_bombs<12){
+        while (n_bombs<6){
             let x = RandomArray.place_bomb(x, LCGRandom.randRange(0, 32));
             let n_bombs  = n_bombs + 1;
         }
