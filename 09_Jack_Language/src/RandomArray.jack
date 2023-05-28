@@ -1,6 +1,5 @@
 class RandomArray {
 
-
     function Array getArray(){
 
         var Array x;
@@ -14,7 +13,6 @@ class RandomArray {
             let x = RandomArray.place_bomb(x, LCGRandom.randRange(0, 32));
             let n_bombs  = n_bombs + 1;
         }
-
         return x;
     }
 
@@ -61,13 +59,7 @@ class RandomArray {
             if ((i>31)|(i<0)){
                 let i = 0;
             }
-
-
         return arr;
         }
-
-
-
     }
-
 }

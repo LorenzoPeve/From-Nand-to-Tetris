@@ -1,6 +1,3 @@
-// Save those locations and having a moving arrow
-// 48 x 50 
-
 class Main {
     function void main() {
         var Game game;
@@ -14,4 +11,3 @@ class Main {
         return;
     }
 }
-
