@@ -1,10 +1,8 @@
 class Main {
     function void main() {
+        
         var Game game;
-        var int a;
-        var Array x;
-
-        do LCGRandom.setSeed(14);
+        do Game.init();
         let game = Game.new();
         do game.play();
         do game.dispose();

@@ -1,24 +1,35 @@
 class Game {
 
+    static int seed;
     static Array board_locations;
     field Array bombs;
     field Array selected;
 
+    field int current_key;
+    field int last_key;
     field int current_position;
+    field int last_position;
+    field int remaining;
+
     field boolean start;
     field boolean quit;
     field boolean reset;
     field boolean selection;
+    field boolean dead;
     field int remaining;
 
     constructor Game new() {        
         // Initializes game and sets the board      
 
         do initialize_board_locations();
-        let selected = initialize_selected();
-
         do show_welcome_message();
         return this;
+    }
+
+    function void init(){
+        // Initializes the required static variables for the class
+        let seed = 1;
+        return;
     }
 
     method void dispose() {
@@ -68,23 +79,12 @@ class Game {
         return key;
     }
     
-    method void play() {
+    method boolean play() {
         
-        var int last_key;
-        var int current_key;
-        var boolean dead;
-        var int last_position;
-
         let last_key = 0;
         let current_key = 1;
         let current_position = 0;
         let last_position = 0;
-        let dead = false;
-        let quit = false;
-        let reset = false;
-        let start = false;
-        let selection = false;
-        let remaining = 32;
 
         while (~quit) {            
             
@@ -141,9 +141,6 @@ class Game {
                     let selected[current_position] = true;
             }
 
-            do Output.moveCursor(20, 0);
-            do Output.printInt(remaining);
-
             if (start){
                 do start_game();
                 let start = false;
@@ -167,41 +164,72 @@ class Game {
             let last_position = current_position;
         }
 
-        return;
+        return false;
     }
-
-
-
 
     method void start_game(){
         // Starts game by cleaning screen and setting up board
+        
+        // Initialize game variables
+        let last_key = 0;
+        let current_key = 1;
+        let current_position = 0;
+        let last_position = 0;
+        let dead = false;
+        let quit = false;
+        let reset = false;
+        let start = false;
+        let selection = false;
+        let remaining = 32;
+        let selected = initialize_selected();
+
+        let seed = seed + 3;
+        do LCGRandom.setSeed(seed);
+        let bombs = RandomArray.getArray();
 
         do Screen.clearScreen();
         do Graphics.draw_board();
         do show_instructions();
-        let bombs = RandomArray.getArray();
         return;
     }
 
     method void winner(){
-        // Starts game by cleaning screen and setting up board
-
         do Screen.clearScreen();
         do Output.moveCursor(12, 20);
         do Output.printString("You are a WINNER!!!!!.");
-        let quit = true;
+        do ask_user();
         return;
     }
 
     method void loser(){
-        // Ends game
         do Graphics.draw_title_gameover(2058);
-        do Sys.wait(500);
-        let quit = true;
+        do Sys.wait(1000);
+        do Screen.clearScreen();
+        do Graphics.draw_title_gameover(2058);
+        do ask_user();
         return;
     }
 
-    // Message and Instructions
+
+    method void ask_user(){
+        // Asks user what to do next
+        var int key;
+        
+        do Output.moveCursor(13, 20);
+        do Output.printString("Press S to PLAY AGAIN");
+        do Output.moveCursor(14, 20);
+        do Output.printString("Press Q to QUIT");
+        do Output.moveCursor(15, 20);
+        let key = Keyboard.readChar();        
+        if (key = 81) { // Q
+            let quit = true;
+        }
+        if (key = 83) { // S
+            let start = true;
+        }
+        return;
+    }
+
     method void show_welcome_message() {
         // Prints the welcome message onto the screen
 
@@ -221,7 +249,7 @@ class Game {
         do Output.println();
         do Output.printString("Press S to START");
         do Output.println();
-        do Output.printString("Press Q ANYTIME to EXIT");
+        do Output.printString("Press Q ANYTIME to QUIT");
         do Output.println();
         do Output.printString("Press R to RESTART");
         return;
@@ -237,7 +265,6 @@ class Game {
         return;
     }
     
-    // Initializing Variables
     method Array initialize_selected() {
             // Initializes selected array to false
             var Array arr;
