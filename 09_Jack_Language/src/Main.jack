@@ -4,13 +4,32 @@
 class Main {
     function void main() {
         var Game game;
-        let game = Game.new();
-        do game.play();
-        do game.dispose();
+        var int a;
+
+        // let game = Game.new();
+        //do game.play();
+        //do game.dispose();
 
         // After quitting game
-        do Screen.clearScreen();
-        do Graphics.draw_end(1612);
+        // do Screen.clearScreen();
+        // do Graphics.draw_end(1612);
+        //do Graphics.draw_bomb(0);
+        //do Graphics.draw_card(0);
+
+        //do Graphics.draw_card(4);
+        //do Graphics.draw_bomb(4);
+
+        //do Graphics.draw_card(8);
+        //do Graphics.draw_check_2(8);
+
+
+
+        do LCGRandom.setSeed(14);
+        let a = LCGRandom.randRange(10, 20);
+        do Output.printInt(LCGRandom.randRange(10, 20));
+        do Output.printInt(LCGRandom.randRange(10, 20));
+        do Output.printInt(LCGRandom.randRange(10, 20));
+
 
         return;
     }
