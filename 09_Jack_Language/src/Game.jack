@@ -1,15 +1,20 @@
 class Game {
 
-    field Array positions;
+    field Array grid;
+    field Array bombs;
+    field Array selected;
     field int current_position;
     field boolean start;
     field boolean quit;
     field boolean reset;
+    field boolean selection;
+    field int remaining;
 
     constructor Game new() {        
         // Initializes game and sets the board      
 
-        do initialize_position();
+        do initialize_grid();
+        let selected = initialize_selected();
         do show_welcome_message();
         return this;
     }
@@ -36,6 +41,9 @@ class Game {
         if (key = 83) { // S
             let start = true;
         }
+        if (key = 32) { // PACE
+            let selection = true;
+        }
         return key;
     }
 
@@ -51,8 +59,8 @@ class Game {
         }
         if (key = 132) { // Right-arrow
             let current_position = current_position + 1;
-            if (current_position > 31) {
-                let current_position = 31;
+            if (current_position > remaining) {
+                let current_position = remaining;
             }
         }
         return key;
@@ -62,19 +70,19 @@ class Game {
         
         var int last_key;
         var int current_key;
-        var boolean game_on;
         var boolean dead;
         var int last_position;
-
         let last_key = 0;
         let current_key = 1;
+        let current_position = 0;
+        let last_position = 0;
+
         let dead = false;
         let quit = false;
         let reset = false;
         let start = false;
-        let game_on = false;
-        let current_position = 0;
-        let last_position = 0;
+        let selection = false;
+        let remaining = 31;
 
         while (~quit) {            
             
@@ -84,20 +92,40 @@ class Game {
             // 2) The Constant refreshing of graphics
 
             let current_key = handle_input();
-            if (~(current_key=last_key)){
+            if (~(current_key=last_key)&(~selection)){
                 do handle_selector();
-                do Graphics.draw_empty_card(positions[last_position]);
-                do Graphics.draw_card(positions[last_position]);
-                do Graphics.draw_cell_selector(positions[current_position]);
+                do Graphics.draw_empty_card(grid[last_position]);
+                do Graphics.draw_card(grid[last_position]);
+                do Graphics.draw_cell_selector(grid[current_position]);
             }
 
+            if (~(current_key=last_key)&(selection)){
+
+                //
+                if (bombs[current_position]=11){
+                    do Graphics.draw_empty_card(grid[current_position]);
+                    do Graphics.draw_card(grid[current_position]);
+                    do Graphics.draw_bomb(grid[current_position]);
+
+                }
+                else {
+                    do Graphics.draw_empty_card(grid[current_position]);
+                    do Graphics.draw_card(grid[current_position]);
+                    do Graphics.draw_check(grid[current_position]);
+                }
+
+
+                // Poke and see if bomb
+                let selection = false;
+            }
+
+
             do Output.moveCursor(20, 0);
-            do Output.printInt(positions[current_position]);
+            do Output.printInt(grid[current_position]);
 
             if (start){
                 do start_game();
                 let start = false;
-                let game_on = true;
             }
 
             if (reset){
@@ -117,6 +145,7 @@ class Game {
         do Screen.clearScreen();
         do Graphics.draw_board();
         do show_instructions();
+        let bombs = RandomArray.getArray();
         return;
     }
 
@@ -152,51 +181,64 @@ class Game {
         do Output.moveCursor(21, 0);
         do Output.printString("Use LEFT & RIGHT-ARROWS to move spot selector.");
         do Output.println();
-        do Output.printString("Then PRESS ENTER to click.");
+        do Output.printString("Then PRESS SPACE to click.");
         return;
     }
 
-    method void initialize_position() {
+    method Array initialize_selected() {
+            // Initializes selected array to false
+            var Array arr;
+            var int counter;
+            
+            let arr = Array.new(32);
+            let counter = 0;
+
+            while (counter<32){
+                let arr[counter] = false;
+                let counter  = counter +1;
+            }        
+            return arr;
+        }
+
+
+    method void initialize_grid() {
         // Stores the locations of the cards in the screen after experimentation
 
-        let positions = Array.new(32);
-        let positions[0] = 0;
-        let positions[1] = 4;
-        let positions[2] = 8;
-        let positions[3] = 12;
-        let positions[4] = 16;
-        let positions[5] = 20;
-        let positions[6] = 24;
-        let positions[7] = 28;
-        let positions[8] = 1600;
-        let positions[9] = 1604;
-        let positions[10] = 1608;
-        let positions[11] = 1612;
-        let positions[12] = 1616;
-        let positions[13] = 1620;
-        let positions[14] = 1624;
-        let positions[15] = 1628;
-        let positions[16] = 3200;
-        let positions[17] = 3204;
-        let positions[18] = 3208;
-        let positions[19] = 3212;
-        let positions[20] = 3216;
-        let positions[21] = 3220;
-        let positions[22] = 3224;
-        let positions[23] = 3228;
-        let positions[24] = 4800;
-        let positions[25] = 4804;
-        let positions[26] = 4808;
-        let positions[27] = 4812;
-        let positions[28] = 4816;
-        let positions[29] = 4820;
-        let positions[30] = 4824;
-        let positions[31] = 4828;
+        let grid = Array.new(32);
+        let grid[0] = 0;
+        let grid[1] = 4;
+        let grid[2] = 8;
+        let grid[3] = 12;
+        let grid[4] = 16;
+        let grid[5] = 20;
+        let grid[6] = 24;
+        let grid[7] = 28;
+        let grid[8] = 1600;
+        let grid[9] = 1604;
+        let grid[10] = 1608;
+        let grid[11] = 1612;
+        let grid[12] = 1616;
+        let grid[13] = 1620;
+        let grid[14] = 1624;
+        let grid[15] = 1628;
+        let grid[16] = 3200;
+        let grid[17] = 3204;
+        let grid[18] = 3208;
+        let grid[19] = 3212;
+        let grid[20] = 3216;
+        let grid[21] = 3220;
+        let grid[22] = 3224;
+        let grid[23] = 3228;
+        let grid[24] = 4800;
+        let grid[25] = 4804;
+        let grid[26] = 4808;
+        let grid[27] = 4812;
+        let grid[28] = 4816;
+        let grid[29] = 4820;
+        let grid[30] = 4824;
+        let grid[31] = 4828;
         return;
     }
-
-
-
 
 
 }

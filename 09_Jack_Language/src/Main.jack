@@ -7,9 +7,10 @@ class Main {
         var int a;
         var Array x;
 
-        // let game = Game.new();
-        //do game.play();
-        //do game.dispose();
+        do LCGRandom.setSeed(14);
+        let game = Game.new();
+        do game.play();
+        do game.dispose();
 
         // After quitting game
         // do Screen.clearScreen();
@@ -25,42 +26,14 @@ class Main {
 
 
 
-        do LCGRandom.setSeed(14);
-        // let a = LCGRandom.randRange(10, 20);
-        // do Output.printInt(LCGRandom.randRange(10, 20));
-        // do Output.printInt(LCGRandom.randRange(10, 20));
-        // do Output.printInt(LCGRandom.randRange(10, 20));
+       
+        //let a = 0;
+        //let x = RandomArray.getArray();
+        //while (a<32){
 
-        
-        let a = 0;
-        let x = RandomArray.initialize_array();
-
-        // let x[0] = 44;
-        // let x =  RandomArray.place_bomb(x, 0);
-
-        let x = RandomArray.getArray();
-        while (a<32){
-
-            do Output.printInt(x[a]);
-            let a  = a +1;
-        }
-
-        let a = 0;
-        let x = RandomArray.getArray();
-        while (a<32){
-
-            do Output.printInt(x[a]);
-            let a  = a +1;
-        }
-
-        let a = 0;
-        let x = RandomArray.getArray();
-        while (a<32){
-
-            do Output.printInt(x[a]);
-            let a  = a +1;
-        }
-
+        //    do Output.printInt(x[a]);
+        //    let a  = a +1;
+        //}
 
         return;
     }
