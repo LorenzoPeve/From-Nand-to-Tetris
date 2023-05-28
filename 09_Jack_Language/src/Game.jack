@@ -62,28 +62,34 @@ class Game {
         
         var int last_key;
         var int current_key;
+        var boolean game_on;
         var boolean dead;
-        let dead = false;
+        var int last_position;
 
         let last_key = 0;
         let current_key = 1;
+        let dead = false;
         let quit = false;
         let reset = false;
         let start = false;
+        let game_on = false;
         let current_position = 0;
+        let last_position = 0;
 
         while (~quit) {            
             
 
-            // Avoid the issue of the current position incrementing by more
-            // than one when the arrow keys are held down.
+            // Avoid the issues of:
+            // 1) Current position incrementing by >1 when keys are held down
+            // 2) The Constant refreshing of graphics
+
             let current_key = handle_input();
             if (~(current_key=last_key)){
                 do handle_selector();
+                do Graphics.draw_empty_card(positions[last_position]);
+                do Graphics.draw_card(positions[last_position]);
+                do Graphics.draw_cell_selector(positions[current_position]);
             }
-
-          
-            do Graphics.draw_cell_selector(positions[current_position]);
 
             do Output.moveCursor(20, 0);
             do Output.printInt(positions[current_position]);
@@ -91,6 +97,7 @@ class Game {
             if (start){
                 do start_game();
                 let start = false;
+                let game_on = true;
             }
 
             if (reset){
@@ -98,6 +105,7 @@ class Game {
             }
 
             let last_key = current_key;
+            let last_position = current_position;
         }
 
         return;
