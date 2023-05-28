@@ -74,11 +74,11 @@ class Game {
         var int current_key;
         var boolean dead;
         var int last_position;
+
         let last_key = 0;
         let current_key = 1;
         let current_position = 0;
         let last_position = 0;
-
         let dead = false;
         let quit = false;
         let reset = false;
@@ -156,13 +156,10 @@ class Game {
 
             if (remaining=6){
                 do winner();
-                let quit = true;
             }
 
             if (dead){
-                do Graphics.draw_title_gameover(2058);
-                do Sys.wait(500);
-                let quit = true;
+                do loser();
             }
 
             let selection = false;
@@ -192,10 +189,17 @@ class Game {
         do Screen.clearScreen();
         do Output.moveCursor(12, 20);
         do Output.printString("You are a WINNER!!!!!.");
+        let quit = true;
         return;
     }
 
-
+    method void loser(){
+        // Ends game
+        do Graphics.draw_title_gameover(2058);
+        do Sys.wait(500);
+        let quit = true;
+        return;
+    }
 
     // Message and Instructions
     method void show_welcome_message() {
