@@ -9,60 +9,59 @@
 // This program only needs to handle arguments that satisfy
 // R0 >= 0, R1 >= 0, and R0*R1 < 32768.
 
-// Put your code here.
-
-// BASECASE Address R0 or R1 equal to zero
+// Retrieve R0; check if zero; set "left_operand" for convenience
 @R0
 D=M
-@BASECASE
-D; JEQ
-
-@R1
-D=M
-@BASECASE
-D; JEQ
-
-// 1. Initialize leftoperand = RAM[0], i = RAM[1], and R2 = 0
-@R0
-D=M
-@leftoperand     	// address 16
+@BASE_CASE_ZERO
+D; JEQ 
+@left_operand
 M=D
 
+// Retrieve R1; check if zero; set "right_operand" for convenience
 @R1
 D=M
-@i          			// address 17
+@BASE_CASE_ZERO
+D; JEQ
+@right_operand
 M=D
 
-@R2					// address 18
+// Initialize iteration parameters
+// Iteration wil do i-- until reaching zero
+@sum
+M=0
+@right_operand
+D=M
+@iteration_n
+M=D
+
+(ADD_LOOP)
+@left_operand
+D=M
+@sum
+M=D+M
+
+// If n is zero, end iteration
+@iteration_n
+MD=M-1
+@RESULT
+D;JEQ
+
+// else, goto ADD_LOOP
+@ADD_LOOP
+0;JMP
+
+(RESULT)
+@sum
+D=M
+@R2
+M=D
+@END
+0; JMP
+
+(BASE_CASE_ZERO)
+@R2
 M=0
 
-// 2. Loop
-
-(LOOP)
-	// if (i==0) go to END
-	@i
-	D=M
-	@END
-	D; JEQ
-
-	@R2
-	D=M
-	@leftoperand
-	D=D+M
-	@R2
-	M=D
-
-	// i--
-	@i
-	M=M-1
-
-	@LOOP
-	0; JMP
-
-(BASECASE)
-	@R2
-	M=0
-
 (END)
-	@END
-	0; JMP
+@END
+0; JMP
