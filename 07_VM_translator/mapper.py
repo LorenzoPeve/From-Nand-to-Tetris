@@ -80,16 +80,41 @@ def arop_sub():
     )
 
 def arop_neg():
-    """    
+    """
+    Pushes to the stack -x, where x is the last value pushed into the stack.   
     """
     return (
         f'{_pop_from_stack_to_i(13)}'
         f'@13\n'
-        f'D=!A\n'
+        f'D=-M\n'
         f'{_push_d_to_stack()}'
         f'{increment_stack_pointer()}'
     )
 
+def arop_not():
+    """
+    Pushes to the stack !x, where x is the last value pushed into the stack.   
+    """
+    return (
+        f'{_pop_from_stack_to_i(13)}'
+        f'@13\n'
+        f'D=!M\n'
+        f'{_push_d_to_stack()}'
+        f'{increment_stack_pointer()}'
+    )
+
+def arop_or():
+    """Performs bitwise x AND y."""
+    return (
+        f'{_pop_from_stack_to_i(13)}'
+        f'{_pop_from_stack_to_i(14)}'
+        f'@13\n'
+        f'D=M\n'
+        f'@14\n'
+        f'D=D|M\n'
+        f'{_push_d_to_stack()}'
+        f'{increment_stack_pointer()}'
+    )
 
 
 def push_constant_to_stack(i: int):
@@ -114,5 +139,12 @@ def translate_line(line: str):
     
     elif line.startswith('neg'):
         return arop_neg()
+    
+    elif line.startswith('not'):
+        return arop_not()
+    
+    elif line.startswith('or'):
+        return arop_or()
+
     else:
         raise ValueError()
