@@ -104,7 +104,7 @@ def arop_not():
     )
 
 def arop_or():
-    """Performs bitwise x AND y."""
+    """Performs bitwise x OR y."""
     return (
         f'{_pop_from_stack_to_i(13)}'
         f'{_pop_from_stack_to_i(14)}'
@@ -116,6 +116,18 @@ def arop_or():
         f'{increment_stack_pointer()}'
     )
 
+def arop_and():
+    """Performs bitwise x AND y."""
+    return (
+        f'{_pop_from_stack_to_i(13)}'
+        f'{_pop_from_stack_to_i(14)}'
+        f'@13\n'
+        f'D=M\n'
+        f'@14\n'
+        f'D=D|M\n'
+        f'{_push_d_to_stack()}'
+        f'{increment_stack_pointer()}'
+    )
 
 def push_constant_to_stack(i: int):
     return (
