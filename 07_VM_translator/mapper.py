@@ -106,8 +106,8 @@ def arop_not():
 def arop_or():
     """Performs bitwise x OR y."""
     return (
-        f'{_pop_from_stack_to_i(13)}'
         f'{_pop_from_stack_to_i(14)}'
+        f'{_pop_from_stack_to_i(13)}'
         f'@13\n'
         f'D=M\n'
         f'@14\n'
@@ -119,15 +119,152 @@ def arop_or():
 def arop_and():
     """Performs bitwise x AND y."""
     return (
-        f'{_pop_from_stack_to_i(13)}'
         f'{_pop_from_stack_to_i(14)}'
+        f'{_pop_from_stack_to_i(13)}'
         f'@13\n'
         f'D=M\n'
         f'@14\n'
-        f'D=D|M\n'
+        f'D=D&M\n'
         f'{_push_d_to_stack()}'
         f'{increment_stack_pointer()}'
     )
+
+def arop_eq(i: int):
+    """Performs equality comparison."""
+    return (
+        f'{_pop_from_stack_to_i(14)}'
+        f'{_pop_from_stack_to_i(13)}'
+
+        f'@13\n'
+        f'D=M\n'
+        f'@14\n'
+        f'D=D-M\n'
+        f'@NOT_EQ_{i}\n' # IF EQ, jump to not EQ
+        f'D;JNE\n'
+
+        f'D=-1\n'
+        f'{_push_d_to_stack()}'
+        f'@END_EQ_{i}\n'
+        f'0;JMP\n'
+
+        f'(NOT_EQ_{i})\n'
+        f'D=0\n'
+        f'{_push_d_to_stack()}'
+
+        f'(END_EQ_{i})\n'
+        f'{increment_stack_pointer()}'
+    )
+
+def arop_gt(i: int):
+    """Evaluates if x > y is True. @R13 stores x and @R14 stores y."""
+    return (
+        f'{_pop_from_stack_to_i(14)}'
+        f'{_pop_from_stack_to_i(13)}'
+        f'@R13\n'
+        f'D=M\n'
+
+        f'@X_LESS_THAN_ZERO{i}\n'
+        f'D; JLT\n'
+
+        # x >= 0
+        f'@R14\n'
+        f'D=M\n'
+        f'@SAME_SIGN{i}\n'
+        f'D; JGE\n'
+
+        # # x >= 0 and y < 0. Thus, x > y
+        f'@IS_TRUE_{i}\n'
+        f'0; JMP\n'
+
+        # x < 0
+        f'(X_LESS_THAN_ZERO{i})\n'
+        f'@R14\n'
+        f'D=M\n'
+        f'@SAME_SIGN{i}\n'
+        f'D; JLT\n'
+
+        # x < 0 and y >= 0. Thus, x < y
+        f'@IS_FALSE_{i}\n'
+        f'0; JMP\n'
+
+        # If (x>=0 and y>=0) or (x<0 and y<0)
+        f'(SAME_SIGN{i})\n'
+        f'@R13\n' 
+        f'D=M\n'  # D = x
+        f'@R14\n'
+        f'D=D-M\n' # D = x-y. If D > 0, x is greater than y
+        f'@IS_TRUE_{i}\n'
+        f'D; JGT\n'
+
+        f'(IS_FALSE_{i})\n'
+        f'D=0\n'
+        f'@END_GT_{i}\n'
+        f'0; JMP\n'
+
+        f'(IS_TRUE_{i})\n'
+        f'D=-1\n'
+           
+        f'(END_GT_{i})\n'
+        f'{_push_d_to_stack()}'
+        f'{increment_stack_pointer()}'
+    )
+
+def arop_lt(i: int):
+    
+    """Evaluates if x < y is True. @R13 stores x and @R14 stores y."""
+    return (
+        f'{_pop_from_stack_to_i(14)}'
+        f'{_pop_from_stack_to_i(13)}'
+        f'@R13\n'
+        f'D=M\n'
+
+        f'@X_LESS_THAN_ZERO{i}\n'
+        f'D; JLT\n'
+
+        # x >= 0
+        f'@R14\n'
+        f'D=M\n'
+        f'@SAME_SIGN{i}\n'
+        f'D; JGE\n'
+
+        # # x >= 0 and y < 0. Thus, x > y
+        f'@IS_FALSE_{i}\n'
+        f'0; JMP\n'
+
+        # x < 0
+        f'(X_LESS_THAN_ZERO{i})\n'
+        f'@R14\n'
+        f'D=M\n'
+        f'@SAME_SIGN{i}\n'
+        f'D; JLT\n'
+
+        # x < 0 and y >= 0. Thus, x < y
+        f'@IS_TRUE_{i}\n'
+        f'0; JMP\n'
+
+        # If (x>=0 and y>=0) or (x<0 and y<0)
+        f'(SAME_SIGN{i})\n'
+        f'@R13\n' 
+        f'D=M\n'  # D = x
+        f'@R14\n'
+        f'D=D-M\n' # D = x-y. If D < 0, x is less than y
+        f'@IS_TRUE_{i}\n'
+        f'D; JLT\n'
+
+        f'(IS_FALSE_{i})\n'
+        f'D=0\n'
+        f'@END_LT_{i}\n'
+        f'0; JMP\n'
+
+        f'(IS_TRUE_{i})\n'
+        f'D=-1\n'
+           
+        f'(END_LT_{i})\n'
+        f'{_push_d_to_stack()}'
+        f'{increment_stack_pointer()}'
+    )
+
+
 
 def push_constant_to_stack(i: int):
     return (
@@ -137,7 +274,7 @@ def push_constant_to_stack(i: int):
         f'{increment_stack_pointer()}'
     )
 
-def translate_line(line: str):
+def translate_line(line: str, line_number: int):
     
     if line.startswith('push constant'):
         i = int(line.replace('push constant', '').strip())
@@ -158,5 +295,17 @@ def translate_line(line: str):
     elif line.startswith('or'):
         return arop_or()
 
+    elif line.startswith('and'):
+        return arop_and()
+
+    elif line.startswith('eq'):
+        return arop_eq(line_number)
+    
+    elif line.startswith('gt'):
+        return arop_gt(line_number)
+
+    elif line.startswith('lt'):
+        return arop_lt(line_number)
+
     else:
-        raise ValueError()
+        raise ValueError(f'Unrecognizable line {line}')
