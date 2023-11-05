@@ -264,8 +264,6 @@ def arop_lt(i: int):
         f'{increment_stack_pointer()}'
     )
 
-
-
 def push_constant_to_stack(i: int):
     return (
         f'@{i}\n'
