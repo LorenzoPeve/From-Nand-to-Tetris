@@ -379,6 +379,29 @@ def pop_to_pointer(index: int):
         f'M=D\n'
     )
 
+def push_from_static(index: int):
+    return (
+        f'@FILENAME.{index}\n'
+        f'D=M\n'
+        f'{_push_d_to_stack()}'
+        f'{increment_stack_pointer()}'
+    )
+
+def pop_to_static(index: int):  
+
+    return (
+        f'{decrement_stack_pointer()}'
+
+        # Set D-register to *SP
+        f'@SP\n'
+        f'A=M\n'
+        f'D=M\n'
+
+        # addr
+        f'@FILENAME.{index}\n'
+        f'M=D\n'
+    )
+
 def translate_line(line: str, line_number: int):
        
     if line.startswith('push constant'):
@@ -443,6 +466,17 @@ def translate_line(line: str, line_number: int):
         i = int(line.replace('pop pointer', '').strip())
         assert i == 0 or i == 1, f'Invalid index. Only 0 or 1.'
         return pop_to_pointer(i)
+    
+
+    elif line.startswith('push static'):
+        i = int(line.replace('push static', '').strip())
+        assert i >= 0 and i < 240
+        return push_from_static(i)
+    
+    elif line.startswith('pop static'):
+        i = int(line.replace('pop static', '').strip())
+        assert i >= 0 and i < 240
+        return pop_to_static(i)
 
 
     else:
