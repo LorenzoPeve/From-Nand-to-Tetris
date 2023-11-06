@@ -8,6 +8,17 @@ Arithmetic Operations follow the same protocol:
     - Set D-register to the result of the computation
 
 """
+import re
+
+MEMSEGMENTS = {
+    'local': 'LCL',
+    'argument': 'ARG',
+    'this': 'THIS',
+    'that': 'THAT'
+}
+PUSH_MEMOP = re.compile(r'push (?P<segment>local|argument|this|that) (?P<value>\d+)')
+POP_MEMOP = re.compile(r'pop (?P<segment>local|argument|this|that) (?P<value>\d+)')
+
 
 
 def increment_stack_pointer():
@@ -272,8 +283,72 @@ def push_constant_to_stack(i: int):
         f'{increment_stack_pointer()}'
     )
 
+def push_from_segment(segment: str, index: int):
+    """
+    Pushes a value from one of LCL, ARG, THIS, THAT memory segments into the
+    stack.
+    """
+    return (
+        f'@{index}\n'
+        f'D=A\n'
+        f'@{segment}\n'
+        f'A=M+D\n'
+        f'D=M\n'
+        f'{_push_d_to_stack()}'
+        f'{increment_stack_pointer()}'
+    )
+
+def pop_from_segment(segment: str, index: int):
+    """
+    Pops a value from the stack into one of LCL, ARG, THIS, THAT memory
+    segments.
+
+    Puts target address into R13.
+    """    
+    return (
+        # addr = segment_base + i
+        f'@{index}\n'
+        f'D=A\n'
+        f'@{segment}\n'
+        f'D=D+M\n'
+        f'@13\n'
+        f'M=D\n'
+
+        f'{decrement_stack_pointer()}'
+
+        # Set D-register to *SP
+        f'@SP\n'
+        f'A=M\n'
+        f'D=M\n'
+
+        # RAM[addr] = D-register
+        f'@13\n'
+        f'A=M\n'
+        f'M=D\n'
+    )
+
+def push_from_temp(index: int):    
+    return (
+        f'@{5+index}\n'
+        f'D=M\n'
+        f'{_push_d_to_stack()}'
+        f'{increment_stack_pointer()}'
+    )
+
+def pop_from_temp(index: int):    
+    return (
+        f'{decrement_stack_pointer()}'
+        # Set D-register to *SP
+        f'@SP\n'
+        f'A=M\n'
+        f'D=M\n'
+
+        f'@{5+index}\n'
+        f'M=D\n'
+    )
+
 def translate_line(line: str, line_number: int):
-    
+       
     if line.startswith('push constant'):
         i = int(line.replace('push constant', '').strip())
         return push_constant_to_stack(i)
@@ -301,9 +376,32 @@ def translate_line(line: str, line_number: int):
     
     elif line.startswith('gt'):
         return arop_gt(line_number)
-
+    
     elif line.startswith('lt'):
-        return arop_lt(line_number)
+        return arop_gt(line_number)
+
+    elif PUSH_MEMOP.match(line):
+        m = PUSH_MEMOP.match(line)
+        segment = MEMSEGMENTS[m.group('segment')]
+        index = m.group('value')
+        return push_from_segment(segment, index)
+    
+    elif POP_MEMOP.match(line):
+        m = POP_MEMOP.match(line)
+        segment = MEMSEGMENTS[m.group('segment')]
+        index = m.group('value')
+        return pop_from_segment(segment, index)
+    
+    elif line.startswith('push temp'):
+        i = int(line.replace('push temp', '').strip())
+        assert i >= 0 and i <=7, f'Temp only goes 5-12'
+        return push_from_temp(i)
+    
+    elif line.startswith('pop temp'):
+        i = int(line.replace('pop temp', '').strip())
+        assert i >= 0 and i <=7, f'Temp only goes 5-12'
+        return pop_from_temp(i)
+
 
     else:
         raise ValueError(f'Unrecognizable line {line}')
