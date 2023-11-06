@@ -298,7 +298,7 @@ def push_from_segment(segment: str, index: int):
         f'{increment_stack_pointer()}'
     )
 
-def pop_from_segment(segment: str, index: int):
+def pop_to_segment(segment: str, index: int):
     """
     Pops a value from the stack into one of LCL, ARG, THIS, THAT memory
     segments.
@@ -335,7 +335,7 @@ def push_from_temp(index: int):
         f'{increment_stack_pointer()}'
     )
 
-def pop_from_temp(index: int):    
+def pop_to_temp(index: int):    
     return (
         f'{decrement_stack_pointer()}'
         # Set D-register to *SP
@@ -344,6 +344,38 @@ def pop_from_temp(index: int):
         f'D=M\n'
 
         f'@{5+index}\n'
+        f'M=D\n'
+    )
+
+def push_from_pointer(index: int):    
+    if index == 0:
+        i = 3
+    else:
+        i = 4
+    
+    return (
+        f'@{i}\n'
+        f'D=M\n'
+        f'{_push_d_to_stack()}'
+        f'{increment_stack_pointer()}'
+    )
+
+def pop_to_pointer(index: int):  
+
+    if index == 0:
+        i = 3
+    else:
+        i = 4
+
+    return (
+        f'{decrement_stack_pointer()}'
+
+        # Set D-register to *SP
+        f'@SP\n'
+        f'A=M\n'
+        f'D=M\n'
+
+        f'@{i}\n'
         f'M=D\n'
     )
 
@@ -390,7 +422,7 @@ def translate_line(line: str, line_number: int):
         m = POP_MEMOP.match(line)
         segment = MEMSEGMENTS[m.group('segment')]
         index = m.group('value')
-        return pop_from_segment(segment, index)
+        return pop_to_segment(segment, index)
     
     elif line.startswith('push temp'):
         i = int(line.replace('push temp', '').strip())
@@ -400,7 +432,17 @@ def translate_line(line: str, line_number: int):
     elif line.startswith('pop temp'):
         i = int(line.replace('pop temp', '').strip())
         assert i >= 0 and i <=7, f'Temp only goes 5-12'
-        return pop_from_temp(i)
+        return pop_to_temp(i)
+
+    elif line.startswith('push pointer'):
+        i = int(line.replace('push pointer', '').strip())
+        assert i == 0 or i == 1, f'Invalid index. Only 0 or 1.'
+        return push_from_pointer(i)
+    
+    elif line.startswith('pop pointer'):
+        i = int(line.replace('pop pointer', '').strip())
+        assert i == 0 or i == 1, f'Invalid index. Only 0 or 1.'
+        return pop_to_pointer(i)
 
 
     else:
