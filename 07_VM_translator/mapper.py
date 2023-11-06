@@ -349,9 +349,9 @@ def pop_to_temp(index: int):
 
 def push_from_pointer(index: int):    
     if index == 0:
-        i = 3
+        i = 'THIS'
     else:
-        i = 4
+        i = 'THAT'
     
     return (
         f'@{i}\n'
@@ -363,9 +363,9 @@ def push_from_pointer(index: int):
 def pop_to_pointer(index: int):  
 
     if index == 0:
-        i = 3
+        i = 'THIS'
     else:
-        i = 4
+        i = 'THAT'
 
     return (
         f'{decrement_stack_pointer()}'
