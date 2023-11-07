@@ -1,76 +1,28 @@
-import sys
 import os
+from pathlib import Path
+import sys
 
-from reader import Reader
-from operations import Operation
-from memory import  MemorySegment
+from translator import Translator
 
+path_obj = Path(sys.argv[1])
 
-if len(sys.argv[1].split('.')) > 1:
+if path_obj.is_dir():
+    files = [f for f in os.listdir(path_obj) if f[-3:] == '.vm']
 
-    r = Reader(sys.argv[1])
-    fname = sys.argv[1].split('.')[0]
-    data = r.read()
-
-    translated = []
-    for line in data:
-        translated.append(f'// {line}')
-        try:
-            op = Operation(line)
-            t = op.translate_operations()
-
-        except ValueError as e:
-            try:
-                m = MemorySegment(line, fname)
-                t = m.translate_memory()
-            except Exception as e:
-                raise Exception
-        finally:
-            translated.extend(t)
-
-    translated = [t for t in translated if t != '']
-    translated.extend(['(END)', '@END', '0;JMP']) # Infinite loop
-
-else:
-    
-    files=  [f for f in os.listdir(sys.argv[1]) if f[-3:] == '.vm']
-
+    asm_code = ""
     for file in files:
-        
-        # Read file
-        r = Reader(os.path.join(sys.argv[1], file))
-        fname = file.split('.')[0]
-        data = r.read()
-        translated = []
+        t = Translator(os.path.join(path_obj, file))
+        asm_code += t.translate()
 
-        for line in data:
-            translated.append(f'// {line}')
-            try:
-                op = Operation(line)
-                t = op.translate_operations()
+    asm_code = asm_code + '(END)\n@END\n0;JMP\n'
+    with open(f'{path_obj.name}.asm', "w") as file:
+        file.write(asm_code)
 
-            except ValueError as e:
-                try:
-                    m = MemorySegment(line, fname)
-                    t = m.translate_memory()
-                except Exception as e:
-                    raise Exception
-            finally:
-                translated.extend(t)
+elif path_obj.is_file():
+
+    t = Translator(path_obj)
+    asm_code = t.translate()
+    asm_code = asm_code + '(END)\n@END\n0;JMP\n'
     
-        translated = [t for t in translated if len(t)>1]
-        translated.extend(['(END)', '@END', '0;JMP']) # Infinite loop
-
-        with open(os.path.join(sys.argv[1], fname) + '.asm', 'w') as file:
-            for i, string in  enumerate(translated):
-                if i == len(translated)-1:
-                    file.write(string)
-                    continue
-                file.write(string + '\n')
-
-with open(fname + '.asm', 'w') as file:
-    for i, string in  enumerate(translated):
-        if i == len(translated)-1:
-            file.write(string)
-            continue
-        file.write(string + '\n')
+    with open(f'{path_obj.stem}.asm', "w") as file:
+        file.write(asm_code)
