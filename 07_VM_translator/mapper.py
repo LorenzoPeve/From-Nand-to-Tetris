@@ -433,7 +433,7 @@ def translate_line(line: str, line_number: int):
         return arop_gt(line_number)
     
     elif line.startswith('lt'):
-        return arop_gt(line_number)
+        return arop_lt(line_number)
 
     elif PUSH_MEMOP.match(line):
         m = PUSH_MEMOP.match(line)
