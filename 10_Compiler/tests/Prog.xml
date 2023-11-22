@@ -1,0 +1,15 @@
+<tokens>
+    <keyword>if</keyword>
+    <symbol>(</symbol>
+    <identifier>x</identifier>
+    <symbol>&lt;</symbol>
+    <intConst>0</intConst>
+    <symbol>)</symbol>
+    <symbol>{</symbol>
+    <keyword>let</keyword>
+    <identifier>sign</identifier>
+    <symbol>=</symbol>
+    <stringConst>negative</stringConst>
+    <symbol>}</symbol>
+    <symbol>;</symbol>
+</tokens>
