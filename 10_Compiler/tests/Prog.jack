@@ -1,7 +1,7 @@
 // This is a test file
 if (x < 0   ) {
     // print hello world
-    let sign = "Hello world";
+    let sign = "negative";
     // omitted
 
 
