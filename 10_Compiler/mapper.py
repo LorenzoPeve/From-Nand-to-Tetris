@@ -103,8 +103,11 @@ def parse(s):
 
     Args:
         s (str): Line of Jack code.
-    """
 
+    Returns
+        list[str]: List of tokens after splitting at symbols and at empty
+        spaces and after removing empty strings.
+    """
     token_list = _split_at_symbols(s)
     
     # Remove empty strings and strip
@@ -139,16 +142,25 @@ def analyze(line):
     for s in processed_line:
         
         if is_keyword(s):
-            output += f'<keyword>{s}</keyword>\n'
+            output += f'<keyword> {s} </keyword>\n'
         elif is_symbol(s):
-            output += f'<symbol>{s}</symbol>\n'
+
+            # (<), (>), (&) are outputted as &lt &gt, and &amp
+            if s == '<':
+                s = '&lt;'
+            elif s == '>':
+                s = '&gt;'
+            elif s == '&':
+                s = '&amp;'
+
+            output += f'<symbol> {s} </symbol>\n'
         elif is_integer(s):
-            output += f'<intConst>{s}</intConst>\n'
+            output += f'<intConst> {s} </intConst>\n'
         elif is_string(s):
-            # Remove ""
-            output += f'<stringConst>{s[1:-1]}</stringConst>\n'
+            # String constants are outputted without the double-quotes
+            output += f'<stringConst> {s[1:-1]} </stringConst>\n'
         elif is_identifier(s):
-            output += f'<identifier>{s}</identifier>\n'
+            output += f'<identifier> {s} </identifier>\n'
         else:
             raise ValueError(f'Character(s) [{s}] could not be mapped.')
     

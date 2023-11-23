@@ -108,37 +108,37 @@ def test_parse_with_strings():
     out = mapper.parse('if class "hello world" class field')
     assert out == ['if', 'class', '"hello world"', 'class', 'field']
 
-# def test_analyze():
+def test_analyze():
 
-#     out = mapper.analyze('if x')
-#     expected = '<keyword>if</keyword>\n<identifier>x</identifier>\n'
-#     assert out == expected
+    out = mapper.analyze('if x')
+    expected = '<keyword> if </keyword>\n<identifier> x </identifier>\n'
+    assert out == expected
 
-#     out = mapper.analyze('while class field static')
-#     expected = (
-#         f'<keyword>while</keyword>\n'
-#         f'<keyword>class</keyword>\n'
-#         f'<keyword>field</keyword>\n'
-#         f'<keyword>static</keyword>\n'
-#     )
+    out = mapper.analyze('while class field static')
+    expected = (
+        f'<keyword> while </keyword>\n'
+        f'<keyword> class </keyword>\n'
+        f'<keyword> field </keyword>\n'
+        f'<keyword> static </keyword>\n'
+    )
 
-# def _compare_list_to_file(lines: list[str], path: str):
-#     """
-#     Compares a list of strings to the contents of a file.    
-#     """
+def _compare_list_to_file(lines: list[str], path: str):
+    """
+    Compares a list of strings to the contents of a file.    
+    """
 
-#     with open(path) as f:
-#         file = f.readlines()
+    with open(path) as f:
+        file = f.readlines()
 
-#     for line1, line2 in zip(lines, file):
-#         if line1.strip() != line2.strip():
-#             raise ValueError(f'\nLine 1:{repr(line1)}\nLine 2:{repr(line2)}')
+    for line1, line2 in zip(lines, file):
+        if line1.strip() != line2.strip():
+            raise ValueError(f'\nLine 1:{repr(line1)}\nLine 2:{repr(line2)}')
 
-# # def test_prog_jack():
+def test_prog_jack():
 
-# #     filepath = _get_testfile('Prog.jack')
-# #     t = Tokenizer(filepath)
-# #     print(t.tokenize())
+    filepath = _get_testfile('Prog.jack')
+    t = Tokenizer(filepath)
+    tokens = t.tokenize().split('\n')
 
-
-
+    compare_file = _get_testfile('Prog.xml')
+    _compare_list_to_file(tokens, compare_file)
