@@ -49,8 +49,8 @@ class Tokenizer():
  
     def tokenize(self):
         """"""
-        tokens = ""
+        tokens = "<tokens>\n"
         for line in self.stream:
             tokens += mapper.analyze(line)
         
-        return tokens
+        return tokens + "</tokens>\n"
