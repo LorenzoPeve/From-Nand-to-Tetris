@@ -155,7 +155,7 @@ def analyze(line):
 
             output += f'<symbol> {s} </symbol>\n'
         elif is_integer(s):
-            output += f'<intConst> {s} </intConst>\n'
+            output += f'<integerConstant> {s} </integerConstant>\n'
         elif is_string(s):
             # String constants are outputted without the double-quotes
             output += f'<stringConst> {s[1:-1]} </stringConst>\n'
