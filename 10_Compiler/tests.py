@@ -1,13 +1,30 @@
 import os
 
 import mapper
-from tokenizer import Tokenizer
+from tokenizer import Tokenizer, _Reader
 
 def _get_testfile(f: str) -> str:
     return os.path.join(
         os.path.dirname(__file__), 'tests', f)
 
 def test_reader():
+    finput = _get_testfile('SquareGame.jack')
+
+    with open(finput) as f:
+        data = f.readlines()
+
+    t = _Reader(data)
+    t.data = t._remove_whitespace()
+    t.data = t._remove_empty_lines()
+    t.data = t._remove_comment_lines()
+    t._remove_inline_comments()
+    t.data = (t._remove_api_comments(t.data))
+
+    for i in t.data:
+        if '/**' in i:
+            raise ValueError
+
+def test_tokenizer_init():
     f_input = _get_testfile('Prog.jack')
     t = Tokenizer(f_input)
     assert len(t.stream) == 3
@@ -134,11 +151,24 @@ def _compare_list_to_file(lines: list[str], path: str):
         if line1.strip() != line2.strip():
             raise ValueError(f'\nLine 1:{repr(line1)}\nLine 2:{repr(line2)}')
 
-def test_prog_jack():
+def test_tokenizer_with_prog():
 
     filepath = _get_testfile('Prog.jack')
     t = Tokenizer(filepath)
     tokens = t.tokenize().split('\n')
 
     compare_file = _get_testfile('Prog.xml')
+    _compare_list_to_file(tokens, compare_file)
+
+def test_tokenizer_with_square():
+
+    filepath = _get_testfile('Square.jack')
+    t = Tokenizer(filepath)
+    tokens = t.tokenize().split('\n')
+
+    with open(_get_testfile('out.xml'), 'w') as file:
+        # Your string to be written to the file
+        file.write(t.tokenize())
+
+    compare_file = _get_testfile('SquareTokenizer.xml')
     _compare_list_to_file(tokens, compare_file)

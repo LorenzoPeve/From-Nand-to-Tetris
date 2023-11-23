@@ -16,7 +16,7 @@ class _Reader():
 
     def _remove_comment_lines(self):
         return [line for line in self.data if not line.startswith('//')]
-
+    
     def _remove_inline_comments(self):
         for i, line in enumerate(self.data):
             if '//' in line:
@@ -24,11 +24,32 @@ class _Reader():
                 line = line[:idx]
                 self.data[i] = line.strip()
 
+    @staticmethod
+    def _remove_api_comments(data):
+        
+        api_com_start = []
+        api_com_end = []
+        for idx, line in enumerate(data):
+            if '/**' in line:
+                api_com_start.append(idx)
+            if '*/' in line:
+                api_com_end.append(idx)
+
+        if len(api_com_start) != len(api_com_end):
+            raise ValueError('API comments malformed.')
+        
+        if len(api_com_start) == 0:
+            return data
+        else:
+            data_no_api = data[:api_com_start[0]] + data[api_com_end[0]+1:]
+            return _Reader._remove_api_comments(data_no_api)
+
     def read(self):
         self.data = self._remove_whitespace()
         self.data = self._remove_empty_lines()
         self.data = self._remove_comment_lines()
         self._remove_inline_comments()
+        self.data = _Reader._remove_api_comments(self.data)
         return self.data
 
 class Tokenizer():
