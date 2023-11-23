@@ -3,7 +3,7 @@
     <symbol> ( </symbol>
     <identifier> x </identifier>
     <symbol> &lt; </symbol>
-    <intConst> 0 </intConst>
+    <integerConstant> 0 </integerConstant>
     <symbol> ) </symbol>
     <symbol> { </symbol>
     <keyword> let </keyword>
