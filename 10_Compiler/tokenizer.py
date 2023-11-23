@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+import mapper
 
 class _Reader():
 
@@ -48,8 +49,8 @@ class Tokenizer():
  
     def tokenize(self):
         """"""
-        lexicals = ""
-        for line in enumerate(self.stream):
-            asm_code += mapper.translate_line(line, idx)
+        tokens = ""
+        for line in self.stream:
+            tokens += mapper.analyze(line)
         
-        return asm_code
+        return tokens

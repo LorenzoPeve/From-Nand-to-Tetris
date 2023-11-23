@@ -13,7 +13,7 @@ SYMBOLS = [
 
 INTEGER_REGEX = re.compile(r'[0-9]+$')
 STRING_REGEX = re.compile(r'"[^"]+"$')
-IDENTIFIER_REGEX = re.compile(r'[A-Za-z_][a-zA-Z0-9_]+$')
+IDENTIFIER_REGEX = re.compile(r'[A-Za-z_][a-zA-Z0-9_]*$')
 
 def is_keyword(token):
     return token in KEYWORDS
@@ -44,12 +44,15 @@ def is_identifier(token):
     """
     return bool(IDENTIFIER_REGEX.match(token))
 
-def split_at_symbols(s):
+def _split_at_symbols(s):
     """
     Returns a list with the original string splitted at symbols locations.    
 
     If there are no symbols, it returns a single element list with original
     string.
+
+    Returns:
+        list: List of strings.
     """
 
     loc = None
@@ -61,18 +64,92 @@ def split_at_symbols(s):
     if loc is None:
         return [s]
 
-    return [s[0:loc]] + [s[loc]] + split_at_symbols(s[loc+1:])
+    return [s[0:loc]] + [s[loc]] + _split_at_symbols(s[loc+1:])
+
+def _get_quotation_marks_locs(s):
+    """
+    Returns locations of `"`. Raises an exception if a string is never closed.    
+    """
+    locs = []
+    for i, char in enumerate(s):
+        if char == '"':
+            locs.append(i)
+
+    if len(locs) % 2 != 0:
+        raise ValueError(
+            f'String constant is malformed. Number of " is {len(locs)}')
+    return locs
+
+def _split_at_non_string_spaces(s):
+    """
+    Returns a list of strings by splitting at non-string spaces.
+
+    'if "hello world"' > ['if', '"hello world"']    
+    """
+    locs = _get_quotation_marks_locs(s)
+    if len(locs) == 0:
+        return s.split(' ')
+
+    return (
+        s[:locs[0]].split(' ') + 
+        [s[locs[0]:locs[1]+1]] + # This is the string constant
+        _split_at_non_string_spaces(s[locs[1]+1:])
+    )
+
+def parse(s):
+    """
+    Parses a line of Jack code into a list of tokens splitting at symbols and
+    at empty spaces.
+
+    Args:
+        s (str): Line of Jack code.
+    """
+
+    token_list = _split_at_symbols(s)
+    
+    # Remove empty strings and strip
+    token_list_pro = []
+    for i in token_list:
+        if len(s) > 0:
+            token_list_pro.append(i.strip())
+
+    # Split list at spaces. Watchout for string constants
+    token_list_splitted = []
+    for characters in token_list_pro:
+        token_list_splitted.extend(
+            _split_at_non_string_spaces(characters))
+
+    out = [s for s in token_list_splitted if len(s) > 0]
+    return out
+
 
 def analyze(line):
     """
     
     Args:
-        (line): A line from a Jack Program
+        line (str): A line from a Jack Program
 
-    Split line at spaces and symbols   
-    
-    """
-    
-    splitted_line = split_at_symbols(line)
-    splitted_line = [s for s in splitted_line if len(s)>0]
+    Returns:
+        (str): Tokens with tags.
 
+    Split line at spaces and symbols    
+    """    
+    processed_line = parse(line)
+    output = ""
+    for s in processed_line:
+        
+        if is_keyword(s):
+            output += f'<keyword>{s}</keyword>\n'
+        elif is_symbol(s):
+            output += f'<symbol>{s}</symbol>\n'
+        elif is_integer(s):
+            output += f'<intConst>{s}</intConst>\n'
+        elif is_string(s):
+            # Remove ""
+            output += f'<stringConst>{s[1:-1]}</stringConst>\n'
+        elif is_identifier(s):
+            output += f'<identifier>{s}</identifier>\n'
+        else:
+            raise ValueError(f'Character(s) [{s}] could not be mapped.')
+    
+    return output
