@@ -8,7 +8,7 @@ def _get_testfile(f: str) -> str:
         os.path.dirname(__file__), 'tests', f)
 
 def test_reader():
-    finput = _get_testfile('SquareGame.jack')
+    finput = _get_testfile('./test_tokens/SquareGame.jack')
 
     with open(finput) as f:
         data = f.readlines()
@@ -25,7 +25,7 @@ def test_reader():
             raise ValueError
 
 def test_tokenizer_init():
-    f_input = _get_testfile('Prog.jack')
+    f_input = _get_testfile('./test_tokens/Prog.jack')
     t = Tokenizer(f_input)
     assert len(t.stream) == 3
 
@@ -153,45 +153,45 @@ def _compare_list_to_file(lines: list[str], path: str):
 
 def test_tokenizer_with_prog():
 
-    filepath = _get_testfile('Prog.jack')
+    filepath = _get_testfile('./test_tokens/Prog.jack')
     t = Tokenizer(filepath)
     tokens = t.tokenize().split('\n')
 
-    compare_file = _get_testfile('Prog.xml')
+    compare_file = _get_testfile('./test_tokens/Prog.xml')
     _compare_list_to_file(tokens, compare_file)
 
 def test_tokenizer_with_square():
 
-    filepath = _get_testfile('Square.jack')
+    filepath = _get_testfile('./test_tokens/Square.jack')
     t = Tokenizer(filepath)
     tokens = t.tokenize().split('\n')
 
     with open(_get_testfile('out.xml'), 'w') as file:
         file.write(t.tokenize())
 
-    compare_file = _get_testfile('SquareTokenizer.xml')
+    compare_file = _get_testfile('./test_tokens/SquareTokenizer.xml')
     _compare_list_to_file(tokens, compare_file)
 
 def test_tokenizer_with_square_game():
 
-    filepath = _get_testfile('SquareGame.jack')
+    filepath = _get_testfile('./test_tokens/SquareGame.jack')
     t = Tokenizer(filepath)
     tokens = t.tokenize().split('\n')
 
     with open(_get_testfile('out.xml'), 'w') as file:
         file.write(t.tokenize())
 
-    compare_file = _get_testfile('SquareGameTokenizer.xml')
+    compare_file = _get_testfile('./test_tokens/SquareGameTokenizer.xml')
     _compare_list_to_file(tokens, compare_file)
 
 def test_tokenizer_with_main():
 
-    filepath = _get_testfile('Main.jack')
+    filepath = _get_testfile('./test_tokens/Main.jack')
     t = Tokenizer(filepath)
     tokens = t.tokenize().split('\n')
 
     with open(_get_testfile('out.xml'), 'w') as file:
         file.write(t.tokenize())
 
-    compare_file = _get_testfile('MainTokenizer.xml')
+    compare_file = _get_testfile('./test_tokens/MainTokenizer.xml')
     _compare_list_to_file(tokens, compare_file)
