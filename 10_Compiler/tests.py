@@ -167,8 +167,31 @@ def test_tokenizer_with_square():
     tokens = t.tokenize().split('\n')
 
     with open(_get_testfile('out.xml'), 'w') as file:
-        # Your string to be written to the file
         file.write(t.tokenize())
 
     compare_file = _get_testfile('SquareTokenizer.xml')
+    _compare_list_to_file(tokens, compare_file)
+
+def test_tokenizer_with_square_game():
+
+    filepath = _get_testfile('SquareGame.jack')
+    t = Tokenizer(filepath)
+    tokens = t.tokenize().split('\n')
+
+    with open(_get_testfile('out.xml'), 'w') as file:
+        file.write(t.tokenize())
+
+    compare_file = _get_testfile('SquareGameTokenizer.xml')
+    _compare_list_to_file(tokens, compare_file)
+
+def test_tokenizer_with_main():
+
+    filepath = _get_testfile('Main.jack')
+    t = Tokenizer(filepath)
+    tokens = t.tokenize().split('\n')
+
+    with open(_get_testfile('out.xml'), 'w') as file:
+        file.write(t.tokenize())
+
+    compare_file = _get_testfile('MainTokenizer.xml')
     _compare_list_to_file(tokens, compare_file)
