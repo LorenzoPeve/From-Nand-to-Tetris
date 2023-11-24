@@ -158,7 +158,7 @@ def analyze(line):
             output += f'<integerConstant> {s} </integerConstant>\n'
         elif is_string(s):
             # String constants are outputted without the double-quotes
-            output += f'<stringConst> {s[1:-1]} </stringConst>\n'
+            output += f'<stringConstant> {s[1:-1]} </stringConstant>\n'
         elif is_identifier(s):
             output += f'<identifier> {s} </identifier>\n'
         else:
