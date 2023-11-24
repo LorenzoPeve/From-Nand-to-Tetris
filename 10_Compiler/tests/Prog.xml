@@ -9,7 +9,7 @@
     <keyword> let </keyword>
     <identifier> sign </identifier>
     <symbol> = </symbol>
-    <stringConst> negative </stringConst>
+    <stringConstant> negative </stringConstant>
     <symbol> ; </symbol>
     <symbol> } </symbol>
 </tokens>
