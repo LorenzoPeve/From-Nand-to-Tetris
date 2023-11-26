@@ -58,20 +58,35 @@ class Tokenizer():
     into Jack-language tokens according to Jack grammar.
     """
 
-    def __init__(self, fpath):
-        
-        self.fpath = fpath
-        path = Path(fpath)
-        self.filename = path.stem
+    def __init__(self, fpath=None, stream=None):
+        """Initializes a tokenizer by passing a filepath or the data itself."""
+        if fpath is not None:
+            self.fpath = fpath
+            path = Path(fpath)
+            self.filename = path.stem
 
-        with open(self.fpath) as f:
-            data = f.readlines()
-            self.stream = _Reader(data).read()
+            with open(self.fpath) as f:
+                data = f.readlines()
+                self.stream = _Reader(data).read()
+
+        if stream is not None:
+            self.stream = stream
  
-    def tokenize(self):
-        """"""
-        tokens = "<tokens>\n"
+    def tokenize(self, headers='tokens'):
+        """
+        Args:
+            headers (str): XML-headers. Required when tokenizing non-classes
+                Jack programs for correct XML rendering.
+        """
+        if len(headers) > 0:
+            tokens = f'<{headers}>\n'
+        else:
+            tokens = ''
+
         for line in self.stream:
             tokens += mapper.analyze(line)
         
-        return tokens + "</tokens>\n"
+        if len(headers) > 0:
+            return tokens + f'</{headers}>\n'
+        else:
+            return tokens
